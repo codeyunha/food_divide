@@ -40,11 +40,11 @@ export default function EditPostForm({
   }
 
   const field =
-    "w-full rounded-xl border border-[var(--line)] px-4 py-3 text-sm outline-none focus:border-[var(--forest)] bg-white";
-  const label = "mb-1.5 block text-[13px] font-semibold text-[var(--ink)]";
+    "w-full rounded-xl border border-[var(--line)] px-4 py-3.5 text-[15px] outline-none focus:border-[var(--forest)] bg-white";
+  const label = "mb-2 block text-sm font-semibold text-[var(--ink)]";
 
   return (
-    <form onSubmit={submit} className="space-y-5">
+    <form onSubmit={submit} className="space-y-6">
       <div>
         <label className={label}>제목 *</label>
         <input
@@ -71,7 +71,7 @@ export default function EditPostForm({
       <button
         type="submit"
         disabled={loading}
-        className="w-full rounded-xl py-3.5 text-sm font-bold text-white transition disabled:opacity-60"
+        className="w-full rounded-xl py-4 text-[15px] font-bold text-white transition disabled:opacity-60"
         style={{ background: "var(--forest)" }}
       >
         {loading ? "저장 중..." : "수정 완료"}

@@ -24,7 +24,7 @@ export default async function AppLayout({
   return (
     <div className="flex h-screen">
       <Sidebar profile={(profile as Profile) ?? null} />
-      <main className="flex-1 overflow-y-auto px-12 py-10">{children}</main>
+      <main className="flex-1 overflow-y-auto px-16 py-12">{children}</main>
     </div>
   );
 }

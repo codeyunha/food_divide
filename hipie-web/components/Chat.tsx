@@ -60,12 +60,12 @@ export default function Chat({
   }
 
   return (
-    <div className="flex h-[440px] flex-col rounded-2xl border border-[var(--line)] bg-white">
-      <div className="border-b border-[var(--line)] px-5 py-3 text-sm font-bold text-[var(--ink)]">
+    <div className="flex h-[480px] flex-col rounded-2xl border border-[var(--line)] bg-white">
+      <div className="border-b border-[var(--line)] px-6 py-4 text-[15px] font-bold text-[var(--ink)]">
         💬 파티 채팅방
       </div>
 
-      <div className="flex-1 space-y-3 overflow-y-auto px-5 py-4">
+      <div className="flex-1 space-y-3.5 overflow-y-auto px-6 py-5">
         {messages.length === 0 && (
           <p className="py-10 text-center text-sm text-[var(--muted)]">
             첫 메시지를 보내보세요!
@@ -79,12 +79,12 @@ export default function Chat({
               className={`flex flex-col ${mine ? "items-end" : "items-start"}`}
             >
               {!mine && (
-                <span className="mb-0.5 text-[11px] text-[var(--muted)]">
+                <span className="mb-0.5 text-xs text-[var(--muted)]">
                   {names[m.sender_id] ?? "익명"}
                 </span>
               )}
               <div
-                className={`max-w-[75%] rounded-2xl px-3.5 py-2 text-sm ${
+                className={`max-w-[75%] rounded-2xl px-4 py-2.5 text-[15px] ${
                   mine
                     ? "bg-[var(--forest)] text-white"
                     : "bg-[var(--forest-light)] text-[var(--ink)]"
@@ -98,16 +98,16 @@ export default function Chat({
         <div ref={bottomRef} />
       </div>
 
-      <form onSubmit={send} className="flex gap-2 border-t border-[var(--line)] p-3">
+      <form onSubmit={send} className="flex gap-2.5 border-t border-[var(--line)] p-4">
         <input
-          className="flex-1 rounded-xl border border-[var(--line)] px-4 py-2.5 text-sm outline-none focus:border-[var(--forest)]"
+          className="flex-1 rounded-xl border border-[var(--line)] px-4 py-3 text-[15px] outline-none focus:border-[var(--forest)]"
           placeholder="메시지를 입력하세요"
           value={text}
           onChange={(e) => setText(e.target.value)}
         />
         <button
           type="submit"
-          className="rounded-xl px-5 text-sm font-bold text-white"
+          className="rounded-xl px-6 text-[15px] font-bold text-white"
           style={{ background: "var(--forest)" }}
         >
           전송

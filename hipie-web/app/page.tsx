@@ -29,22 +29,22 @@ export default function SplashPage() {
       />
 
       <div className="relative z-10 flex flex-col items-center px-6 text-center">
-        <div className="mb-6 h-28 w-28 overflow-hidden rounded-[28px] bg-white/10 p-2 shadow-2xl">
+        <div className="mb-7 h-32 w-32 overflow-hidden rounded-[28px] bg-white/10 p-2.5 shadow-2xl">
           <Image
             src="/hipie.png"
             alt="Hi! Pie!"
-            width={112}
-            height={112}
+            width={128}
+            height={128}
             className="h-full w-full object-contain"
           />
         </div>
-        <h1 className="text-4xl font-bold tracking-tight">Hi! Pie!</h1>
-        <p className="mt-3 text-[15px] opacity-75">
+        <h1 className="text-5xl font-bold tracking-tight">Hi! Pie!</h1>
+        <p className="mt-3.5 text-base opacity-75">
           대용량 재료·완제품을 이웃과 나누는 소분 파티
         </p>
         <Link
           href="/login"
-          className="mt-10 rounded-full border border-white/30 bg-white/15 px-9 py-3.5 text-[15px] font-semibold transition hover:bg-white/25"
+          className="mt-11 rounded-full border border-white/30 bg-white/15 px-10 py-4 text-base font-semibold transition hover:bg-white/25"
         >
           시작하기
         </Link>

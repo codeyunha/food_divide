@@ -71,14 +71,14 @@ export default function JoinButton({
   // 파티장: 삭제
   if (isHost) {
     return (
-      <div className="space-y-2">
-        <div className="rounded-xl bg-[var(--forest-light)] px-5 py-3.5 text-center text-sm font-semibold text-[var(--forest)]">
+      <div className="space-y-2.5">
+        <div className="rounded-xl bg-[var(--forest-light)] px-6 py-4 text-center text-[15px] font-semibold text-[var(--forest)]">
           내가 개설한 파티예요 · 아래 채팅방에서 소통하세요
         </div>
         <button
           onClick={remove}
           disabled={loading}
-          className="w-full rounded-xl border border-red-200 py-3 text-sm font-bold text-red-500 transition hover:bg-red-50 disabled:opacity-60"
+          className="w-full rounded-xl border border-red-200 py-3.5 text-[15px] font-bold text-red-500 transition hover:bg-red-50 disabled:opacity-60"
         >
           🗑️ 파티방 삭제
         </button>
@@ -89,14 +89,14 @@ export default function JoinButton({
   // 파티원: 나가기
   if (isMember) {
     return (
-      <div className="space-y-2">
-        <div className="rounded-xl bg-[var(--forest-light)] px-5 py-3.5 text-center text-sm font-semibold text-[var(--forest)]">
+      <div className="space-y-2.5">
+        <div className="rounded-xl bg-[var(--forest-light)] px-6 py-4 text-center text-[15px] font-semibold text-[var(--forest)]">
           참여 완료! 아래 채팅방에서 소통하세요
         </div>
         <button
           onClick={leave}
           disabled={loading}
-          className="w-full rounded-xl border border-[var(--line)] py-3 text-sm font-bold text-[var(--muted)] transition hover:bg-[var(--cream)] disabled:opacity-60"
+          className="w-full rounded-xl border border-[var(--line)] py-3.5 text-[15px] font-bold text-[var(--muted)] transition hover:bg-[var(--cream)] disabled:opacity-60"
         >
           🚪 파티 나가기
         </button>
@@ -109,7 +109,7 @@ export default function JoinButton({
     <button
       onClick={join}
       disabled={loading}
-      className="w-full rounded-xl py-3.5 text-sm font-bold text-white transition disabled:opacity-60"
+      className="w-full rounded-xl py-4 text-[15px] font-bold text-white transition disabled:opacity-60"
       style={{ background: "var(--forest)" }}
     >
       {loading ? "참여 중..." : "함께 참여하기"}

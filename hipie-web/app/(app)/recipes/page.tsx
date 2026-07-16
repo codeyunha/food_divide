@@ -62,11 +62,11 @@ export default async function RecipesPage() {
       <RecipeSearch />
 
       {recommended.length > 0 && (
-        <section className="mb-10">
-          <h3 className="mb-3 text-base font-bold text-[var(--ink)]">
+        <section className="mb-11">
+          <h3 className="mb-4 text-lg font-bold text-[var(--ink)]">
             내 파티 재료 기반 추천
           </h3>
-          <div className="grid grid-cols-[repeat(auto-fill,minmax(180px,1fr))] gap-4">
+          <div className="grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-5">
             {recommended.map((r) => (
               <RecipeCard
                 key={r.id}
@@ -81,8 +81,8 @@ export default async function RecipesPage() {
       )}
 
       <section>
-        <h3 className="mb-3 text-base font-bold text-[var(--ink)]">레시피 둘러보기</h3>
-        <div className="grid grid-cols-[repeat(auto-fill,minmax(180px,1fr))] gap-4">
+        <h3 className="mb-4 text-lg font-bold text-[var(--ink)]">레시피 둘러보기</h3>
+        <div className="grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-5">
           {((browse as Pick<Recipe, "id" | "name" | "main_image" | "category">[]) ?? []).map(
             (r) => (
               <RecipeCard

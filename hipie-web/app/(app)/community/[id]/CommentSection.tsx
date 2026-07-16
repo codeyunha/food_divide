@@ -51,20 +51,20 @@ export default function CommentSection({
   }
 
   return (
-    <div className="mt-6 rounded-2xl border border-[var(--line)] bg-white p-6">
-      <h3 className="mb-4 text-base font-bold text-[var(--ink)]">
+    <div className="mt-7 rounded-2xl border border-[var(--line)] bg-white p-7">
+      <h3 className="mb-5 text-lg font-bold text-[var(--ink)]">
         댓글 {comments.length}
       </h3>
 
       <div className="space-y-4">
         {comments.length === 0 && (
-          <p className="py-4 text-center text-sm text-[var(--muted)]">
+          <p className="py-4 text-center text-[15px] text-[var(--muted)]">
             첫 댓글을 남겨보세요!
           </p>
         )}
         {comments.map((c) => (
-          <div key={c.id} className="flex gap-3">
-            <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center overflow-hidden rounded-xl bg-[var(--forest-light)] text-base">
+          <div key={c.id} className="flex gap-3.5">
+            <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center overflow-hidden rounded-xl bg-[var(--forest-light)] text-lg">
               {c.author?.avatar_url ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={c.author.avatar_url} alt="" className="h-full w-full object-cover" />
@@ -74,21 +74,21 @@ export default function CommentSection({
             </div>
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2">
-                <span className="text-[13px] font-bold text-[var(--ink)]">
+                <span className="text-sm font-bold text-[var(--ink)]">
                   {c.author?.nickname ?? "익명"}
                 </span>
-                <span className="text-[11px] text-[var(--muted)]">
+                <span className="text-xs text-[var(--muted)]">
                   {timeAgo(c.created_at)}
                 </span>
               </div>
-              <p className="mt-0.5 text-sm leading-relaxed text-[var(--ink)]">
+              <p className="mt-1 text-[15px] leading-relaxed text-[var(--ink)]">
                 {c.content}
               </p>
             </div>
             {userId === c.author_id && (
               <button
                 onClick={() => remove(c.id)}
-                className="flex-shrink-0 self-start text-xs text-[var(--muted)] hover:text-red-500"
+                className="flex-shrink-0 self-start text-[13px] text-[var(--muted)] hover:text-red-500"
               >
                 삭제
               </button>
@@ -98,9 +98,9 @@ export default function CommentSection({
       </div>
 
       {userId ? (
-        <form onSubmit={submit} className="mt-5 flex gap-2 border-t border-[var(--line)] pt-4">
+        <form onSubmit={submit} className="mt-6 flex gap-2.5 border-t border-[var(--line)] pt-5">
           <input
-            className="flex-1 rounded-xl border border-[var(--line)] px-4 py-2.5 text-sm outline-none focus:border-[var(--forest)]"
+            className="flex-1 rounded-xl border border-[var(--line)] px-4 py-3 text-[15px] outline-none focus:border-[var(--forest)]"
             placeholder="댓글을 입력하세요"
             value={text}
             onChange={(e) => setText(e.target.value)}
@@ -108,14 +108,14 @@ export default function CommentSection({
           <button
             type="submit"
             disabled={posting}
-            className="rounded-xl px-5 text-sm font-bold text-white disabled:opacity-60"
+            className="rounded-xl px-6 text-[15px] font-bold text-white disabled:opacity-60"
             style={{ background: "var(--forest)" }}
           >
             등록
           </button>
         </form>
       ) : (
-        <p className="mt-5 border-t border-[var(--line)] pt-4 text-center text-xs text-[var(--muted)]">
+        <p className="mt-6 border-t border-[var(--line)] pt-5 text-center text-[13px] text-[var(--muted)]">
           로그인하면 댓글을 남길 수 있어요
         </p>
       )}
