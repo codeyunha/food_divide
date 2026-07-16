@@ -1,5 +1,6 @@
 import PageHead from "@/components/PageHead";
 import PartyCard from "@/components/PartyCard";
+import EmptyState from "@/components/EmptyState";
 import { getMyParties, getFavoriteIds } from "@/lib/queries";
 
 export const dynamic = "force-dynamic";
@@ -19,7 +20,13 @@ export default async function MyPartiesPage() {
           내가 개설한 파티 · {hosted.length}
         </h3>
         {hosted.length === 0 ? (
-          <p className="text-sm text-[var(--muted)]">개설한 파티가 없어요.</p>
+          <EmptyState
+            emoji="📦"
+            title="개설한 파티가 없어요"
+            desc="남는 재료나 완제품이 있다면 파티를 열어 이웃과 나눠보세요."
+            actionHref="/party/new"
+            actionLabel="＋ 파티 개설하기"
+          />
         ) : (
           <div className="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-5">
             {hosted.map((p) => (
@@ -34,7 +41,13 @@ export default async function MyPartiesPage() {
           참여한 파티 · {joined.length}
         </h3>
         {joined.length === 0 ? (
-          <p className="text-sm text-[var(--muted)]">참여한 파티가 없어요.</p>
+          <EmptyState
+            emoji="🙌"
+            title="참여한 파티가 없어요"
+            desc="관심있는 파티에 참여하고 이웃과 함께 소분해보세요."
+            actionHref="/home"
+            actionLabel="파티 둘러보기"
+          />
         ) : (
           <div className="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-5">
             {joined.map((p) => (

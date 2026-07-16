@@ -78,13 +78,13 @@ export default async function PartyDetail({
         ← 목록으로
       </Link>
 
-      <div className="rounded-2xl border border-[var(--line)] bg-white p-7">
-        <div className="mb-4 flex items-start justify-between gap-4">
+      <div className="rounded-2xl border border-[var(--line)] bg-white p-5 sm:p-7">
+        <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
           <div>
             <span className="rounded-full bg-[var(--forest-light)] px-2.5 py-1 text-xs font-bold text-[var(--forest)]">
               {party.type === "finished" ? "완제품" : "재료"}
             </span>
-            <h1 className="mt-2 text-2xl font-bold text-[var(--ink)]">
+            <h1 className="mt-2 text-xl font-bold text-[var(--ink)] sm:text-2xl">
               {party.title}
             </h1>
             <p className="mt-1 text-sm text-[var(--muted)]">
@@ -92,7 +92,7 @@ export default async function PartyDetail({
               {(party.host?.manner_score ?? 36.5).toFixed(1)}°C
             </p>
           </div>
-          <span className="text-2xl font-bold text-[var(--ink)]">
+          <span className="text-xl font-bold text-[var(--ink)] sm:text-2xl">
             {won(party.price)}
           </span>
         </div>
@@ -113,7 +113,7 @@ export default async function PartyDetail({
         )}
 
         {/* meta grid */}
-        <div className="mb-5 grid grid-cols-3 gap-3">
+        <div className="mb-5 grid grid-cols-1 gap-3 sm:grid-cols-3">
           <Meta label="전체 용량/개수" value={party.total_amount} />
           <Meta
             label="유통기한"

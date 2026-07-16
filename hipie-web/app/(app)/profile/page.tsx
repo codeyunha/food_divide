@@ -57,9 +57,9 @@ export default async function ProfilePage() {
       </div>
 
       <div className="mb-8 grid grid-cols-3 gap-4">
-        <Stat label="개설한 파티" value={hostedCount ?? 0} />
-        <Stat label="참여한 파티" value={joinedCount ?? 0} />
-        <Stat label="찜한 파티" value={favCount ?? 0} />
+        <Stat emoji="🎉" label="개설한 파티" value={hostedCount ?? 0} />
+        <Stat emoji="🙌" label="참여한 파티" value={joinedCount ?? 0} />
+        <Stat emoji="❤️" label="찜한 파티" value={favCount ?? 0} />
       </div>
 
       <h3 className="mb-3 text-base font-bold text-[var(--ink)]">내 정보 수정</h3>
@@ -72,10 +72,19 @@ export default async function ProfilePage() {
   );
 }
 
-function Stat({ label, value }: { label: string; value: number }) {
+function Stat({
+  emoji,
+  label,
+  value,
+}: {
+  emoji: string;
+  label: string;
+  value: number;
+}) {
   return (
     <div className="rounded-2xl border border-[var(--line)] bg-white p-5 text-center">
-      <div className="text-3xl font-bold text-[var(--forest)]">{value}</div>
+      <div className="text-2xl">{emoji}</div>
+      <div className="mt-1.5 text-3xl font-bold text-[var(--forest)]">{value}</div>
       <div className="mt-1 text-sm text-[var(--muted)]">{label}</div>
     </div>
   );

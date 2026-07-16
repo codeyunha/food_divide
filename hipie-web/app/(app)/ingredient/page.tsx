@@ -1,7 +1,10 @@
 import Link from "next/link";
 import PageHead from "@/components/PageHead";
 import PartyCard from "@/components/PartyCard";
+import ListBanner from "@/components/ListBanner";
+import EmptyState from "@/components/EmptyState";
 import { listParties, getFavoriteIds } from "@/lib/queries";
+import { daysLeft } from "@/lib/format";
 
 export const dynamic = "force-dynamic";
 
@@ -10,6 +13,7 @@ export default async function IngredientPage() {
     listParties("ingredient"),
     getFavoriteIds(),
   ]);
+  const urgentCount = parties.filter((p) => daysLeft(p.expiry_date) <= 2).length;
 
   return (
     <>
@@ -47,25 +51,23 @@ export default async function IngredientPage() {
       </div>
 
       {parties.length === 0 ? (
-        <Empty />
+        <EmptyState
+          emoji="🥬"
+          title="아직 재료 파티가 없어요"
+          desc="대용량으로 구매한 식재료를 나눠보세요. 첫 파티를 열면 이웃들이 함께해요!"
+          actionHref="/party/new?type=ingredient"
+          actionLabel="＋ 재료 파티 열기"
+        />
       ) : (
-        <div className="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-5">
-          {parties.map((p) => (
-            <PartyCard key={p.id} party={p} initialFavorite={favIds.has(p.id)} />
-          ))}
-        </div>
+        <>
+          <ListBanner count={parties.length} urgentCount={urgentCount} label="재료 파티" />
+          <div className="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-5">
+            {parties.map((p) => (
+              <PartyCard key={p.id} party={p} initialFavorite={favIds.has(p.id)} />
+            ))}
+          </div>
+        </>
       )}
     </>
-  );
-}
-
-function Empty() {
-  return (
-    <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-[var(--line)] py-24 text-center">
-      <div className="text-4xl">🥬</div>
-      <p className="mt-3 text-sm text-[var(--muted)]">
-        아직 재료 파티가 없어요. 첫 파티를 열어보세요!
-      </p>
-    </div>
   );
 }

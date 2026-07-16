@@ -40,6 +40,23 @@ button {
   border-radius: 6px;
 }
 
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes slideIn {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
 /* thin scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
