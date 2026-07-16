@@ -36,6 +36,8 @@ auth.users ─1:1─ profiles
                     │         └─1:1─ chat_rooms ─1:N─ messages ─N:1─ profiles
                     │
 recipes (독립 참조 데이터, merged_recipes (1).json)
+
+profiles ─1:N─ posts ─1:N─ comments ─N:1─ profiles
 ```
 
 ---
@@ -224,6 +226,41 @@ create index recipes_name_trgm_idx  on public.recipes using gin (name gin_trgm_o
 
 ---
 
+### 4.8 posts — 커뮤니티 게시글
+
+```sql
+create table public.posts (
+  id          uuid primary key default gen_random_uuid(),
+  author_id   uuid not null references public.profiles(id) on delete cascade,
+  title       text not null check (char_length(title) > 0),
+  content     text not null check (char_length(content) > 0),
+  images      text[] not null default '{}',            -- Storage post-images 경로
+  created_at  timestamptz not null default now(),
+  updated_at  timestamptz not null default now()
+);
+
+create index posts_created_idx on public.posts (created_at desc);
+create index posts_author_idx  on public.posts (author_id);
+```
+
+### 4.9 comments — 게시글 댓글
+
+```sql
+create table public.comments (
+  id          uuid primary key default gen_random_uuid(),
+  post_id     uuid not null references public.posts(id) on delete cascade,
+  author_id   uuid not null references public.profiles(id) on delete cascade,
+  content     text not null check (char_length(content) > 0),
+  created_at  timestamptz not null default now()
+);
+
+create index comments_post_idx on public.comments (post_id, created_at);
+```
+
+> 실제 마이그레이션 SQL: `hipie-web/supabase/migrations/0001_community_and_avatar.sql`
+
+---
+
 ## 5. 레시피 추천 매칭 (핵심 로직)
 
 파티/보유 재료 태그(`text[]`)와 레시피의 `ingredient_tokens(text[])`를 **배열 겹침(overlap)** 으로 매칭, 일치 개수로 정렬.
@@ -258,6 +295,7 @@ select * from public.recommend_recipes(
 | `party-photos` | public | 파티 실물 사진 | `{party_id}/{uuid}.jpg` |
 | `receipts` | **private** | 영수증 사진(민감) | `{party_id}/receipt.jpg` |
 | `avatars` | public | 프로필 이미지 | `{user_id}/avatar.jpg` |
+| `post-images` | public | 커뮤니티 게시글 첨부 이미지 | `{user_id}/{uuid}.jpg` |
 
 > 영수증은 개인정보(구매내역) 성격이 있어 **private 버킷 + 파티원만 접근** 정책 권장. DB에는 경로만 저장.
 
@@ -265,9 +303,14 @@ select * from public.recommend_recipes(
 insert into storage.buckets (id, name, public) values
   ('party-photos', 'party-photos', true),
   ('receipts',     'receipts',     false),
-  ('avatars',      'avatars',      true)
+  ('avatars',      'avatars',      true),
+  ('post-images',  'post-images',  true)
 on conflict (id) do nothing;
 ```
+
+**`storage.objects` 정책 (avatars / post-images)**: 각 버킷 모두 `{user_id}/...` 경로 규칙을 따르며,
+본인 폴더에만 업로드·수정·삭제할 수 있도록 `storage.foldername(name)[1] = auth.uid()::text` 조건의
+RLS 정책을 둔다. 전체 SQL은 `hipie-web/supabase/migrations/0001_community_and_avatar.sql` 참조.
 
 ---
 
@@ -345,6 +388,18 @@ create policy "messages send members" on public.messages for insert with check (
 create policy "recipes read all" on public.recipes for select using (true);
 ```
 
+### posts / comments (읽기 전체 공개, 쓰기/수정/삭제는 본인만)
+```sql
+create policy "posts read all"    on public.posts for select using (true);
+create policy "posts insert self" on public.posts for insert with check (auth.uid() = author_id);
+create policy "posts update self" on public.posts for update using (auth.uid() = author_id);
+create policy "posts delete self" on public.posts for delete using (auth.uid() = author_id);
+
+create policy "comments read all"    on public.comments for select using (true);
+create policy "comments insert self" on public.comments for insert with check (auth.uid() = author_id);
+create policy "comments delete self" on public.comments for delete using (auth.uid() = author_id);
+```
+
 ---
 
 ## 8. 트리거 / 자동화
@@ -404,6 +459,7 @@ create trigger trg_parties_updated  before update on public.parties
 | 내 파티 목록 | `parties where host_id=auth.uid()` ∪ `party_members where user_id=auth.uid()` |
 | 프로필 | `profiles where id=auth.uid()` + 활동 집계 |
 | 채팅방 | `messages where room_id=? order by created_at` (Realtime 구독) |
+| 커뮤니티 | `posts order by created_at desc` / `comments where post_id=? order by created_at` |
 
 ---
 
@@ -411,7 +467,7 @@ create trigger trg_parties_updated  before update on public.parties
 
 1. `create extension if not exists pg_trgm;`
 2. ENUM 타입 생성 (§3)
-3. 테이블 생성: `profiles` → `parties` → `party_members` → `favorites` → `chat_rooms` → `messages` → `recipes` (§4)
+3. 테이블 생성: `profiles` → `parties` → `party_members` → `favorites` → `chat_rooms` → `messages` → `recipes` → `posts` → `comments` (§4)
 4. 인덱스 (§4 내 포함)
 5. 함수 `recommend_recipes` (§5)
 6. Storage 버킷 (§6)

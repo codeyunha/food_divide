@@ -13,6 +13,7 @@ const NAV = [
   { href: "/recipes", label: "레시피", icon: "🍳" },
   { href: "/favorites", label: "파티 찜하기", icon: "❤️" },
   { href: "/my", label: "내 파티 목록", icon: "📋" },
+  { href: "/community", label: "커뮤니티", icon: "💬" },
   { href: "/profile", label: "프로필", icon: "👤" },
 ];
 
@@ -46,8 +47,17 @@ export default function Sidebar({ profile }: { profile: Profile | null }) {
       </Link>
 
       <div className="mb-4 flex items-center gap-2.5 rounded-2xl bg-white/10 px-3.5 py-3.5">
-        <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/15 text-lg">
-          🐤
+        <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center overflow-hidden rounded-xl bg-white/15 text-lg">
+          {profile?.avatar_url ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={profile.avatar_url}
+              alt=""
+              className="h-full w-full object-cover"
+            />
+          ) : (
+            "🐤"
+          )}
         </div>
         <div className="min-w-0">
           <div className="truncate text-[13.5px] font-bold">

@@ -53,3 +53,24 @@ export type Message = {
   created_at: string;
   sender?: Profile | null;
 };
+
+export type Post = {
+  id: string;
+  author_id: string;
+  title: string;
+  content: string;
+  images: string[];
+  created_at: string;
+  updated_at: string;
+  author?: Profile | null;
+  comment_count?: number;
+};
+
+export type Comment = {
+  id: string;
+  post_id: string;
+  author_id: string;
+  content: string;
+  created_at: string;
+  author?: Profile | null;
+};

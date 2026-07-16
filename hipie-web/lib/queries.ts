@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
-import type { Party, PartyType } from "@/lib/types";
+import type { Party, PartyType, Post, Comment } from "@/lib/types";
 
 const SELECT =
   "id, host_id, type, title, photos, receipt_photo, tags, price, expiry_date, total_amount, description, capacity, status, created_at, host:profiles!parties_host_id_fkey(id, nickname, avatar_url, manner_score), party_members(count)";
@@ -104,4 +104,62 @@ export async function getMyParties(): Promise<{ hosted: Party[]; joined: Party[]
     joined = ((data as unknown as Raw[]) ?? []).map(shape);
   }
   return { hosted, joined };
+}
+
+// ---- 커뮤니티 (posts / comments) ----
+
+const POST_SELECT =
+  "id, author_id, title, content, images, created_at, updated_at, author:profiles!posts_author_id_fkey(id, nickname, avatar_url, manner_score), comments(count)";
+
+type RawPost = Omit<Post, "author" | "comment_count"> & {
+  author: Post["author"] | Post["author"][];
+  comments: { count: number }[];
+};
+
+function shapePost(r: RawPost): Post {
+  const author = Array.isArray(r.author) ? r.author[0] : r.author;
+  return {
+    ...r,
+    author: author ?? null,
+    comment_count: r.comments?.[0]?.count ?? 0,
+  };
+}
+
+export async function listPosts(): Promise<Post[]> {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("posts")
+    .select(POST_SELECT)
+    .order("created_at", { ascending: false });
+  return ((data as unknown as RawPost[]) ?? []).map(shapePost);
+}
+
+export async function getPost(id: string): Promise<Post | null> {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("posts")
+    .select(POST_SELECT)
+    .eq("id", id)
+    .maybeSingle();
+  return data ? shapePost(data as unknown as RawPost) : null;
+}
+
+const COMMENT_SELECT =
+  "id, post_id, author_id, content, created_at, author:profiles!comments_author_id_fkey(id, nickname, avatar_url, manner_score)";
+
+type RawComment = Omit<Comment, "author"> & {
+  author: Comment["author"] | Comment["author"][];
+};
+
+export async function listComments(postId: string): Promise<Comment[]> {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("comments")
+    .select(COMMENT_SELECT)
+    .eq("post_id", postId)
+    .order("created_at", { ascending: true });
+  return ((data as unknown as RawComment[]) ?? []).map((c) => ({
+    ...c,
+    author: Array.isArray(c.author) ? c.author[0] ?? null : c.author ?? null,
+  }));
 }

@@ -37,8 +37,13 @@ export default async function ProfilePage() {
       <PageHead title="👤 프로필" subtitle="내 정보와 활동을 확인하세요" />
 
       <div className="mb-8 flex items-center gap-4 rounded-2xl border border-[var(--line)] bg-white p-6">
-        <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--forest-light)] text-3xl">
-          🐤
+        <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-[var(--forest-light)] text-3xl">
+          {p.avatar_url ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={p.avatar_url} alt="" className="h-full w-full object-cover" />
+          ) : (
+            "🐤"
+          )}
         </div>
         <div>
           <div className="text-lg font-bold text-[var(--ink)]">{p.nickname}</div>
@@ -58,7 +63,11 @@ export default async function ProfilePage() {
       </div>
 
       <h3 className="mb-3 text-base font-bold text-[var(--ink)]">내 정보 수정</h3>
-      <ProfileForm userId={user.id} initialNickname={p.nickname} />
+      <ProfileForm
+        userId={user.id}
+        initialNickname={p.nickname}
+        initialAvatarUrl={p.avatar_url}
+      />
     </>
   );
 }
