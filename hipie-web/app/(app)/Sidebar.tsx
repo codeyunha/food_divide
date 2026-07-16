@@ -163,43 +163,53 @@ export default function Sidebar({
         </button>
       </aside>
 
-      {/* ── Mobile top bar ── */}
+      {/* ── Mobile top bar (iOS-style translucent nav bar) ── */}
       <header
-        className="flex flex-shrink-0 items-center justify-between px-4 py-3 text-white md:hidden"
-        style={{ background: "var(--forest)" }}
+        className="sticky top-0 z-30 flex flex-shrink-0 items-center justify-between px-4 text-white backdrop-blur-xl md:hidden"
+        style={{
+          background: "color-mix(in srgb, var(--forest) 82%, transparent)",
+          borderBottom: "0.5px solid rgba(255,255,255,0.14)",
+          paddingTop: "env(safe-area-inset-top)",
+        }}
       >
-        <Link href="/home" className="flex items-center gap-2">
-          <span className="h-8 w-8 overflow-hidden rounded-lg bg-white/10 p-1">
-            <Image
-              src="/hipie.png"
-              alt="Hi! Pie!"
-              width={32}
-              height={32}
-              className="h-full w-full object-contain"
-            />
-          </span>
-          <span className="text-[15px] font-bold">Hi! Pie!</span>
-        </Link>
-        <button
-          onClick={() => setDrawerOpen(true)}
-          aria-label="전체 메뉴"
-          className="flex h-9 w-9 items-center justify-center rounded-lg text-xl transition hover:bg-white/10"
-        >
-          ☰
-        </button>
+        <div className="flex w-full items-center justify-between py-2.5">
+          <Link href="/home" className="flex items-center gap-2 active:opacity-60">
+            <span className="h-8 w-8 overflow-hidden rounded-[9px] bg-white/10 p-1">
+              <Image
+                src="/hipie.png"
+                alt="Hi! Pie!"
+                width={32}
+                height={32}
+                className="h-full w-full object-contain"
+              />
+            </span>
+            <span className="text-[17px] font-bold tracking-tight">Hi! Pie!</span>
+          </Link>
+          <button
+            onClick={() => setDrawerOpen(true)}
+            aria-label="전체 메뉴"
+            className="flex h-9 w-9 items-center justify-center rounded-full text-xl transition active:scale-90 active:bg-white/15"
+          >
+            ☰
+          </button>
+        </div>
       </header>
 
-      {/* ── Mobile drawer ── */}
+      {/* ── Mobile drawer (iOS-style sheet) ── */}
       {drawerOpen && (
-        <div className="fixed inset-0 z-50 md:hidden">
+        <div className="fixed inset-0 z-50 animate-[fadeIn_0.2s_ease] md:hidden">
           <button
             aria-label="메뉴 닫기"
-            className="absolute inset-0 bg-black/40"
+            className="absolute inset-0 bg-black/40 backdrop-blur-[2px]"
             onClick={() => setDrawerOpen(false)}
           />
           <div
-            className="absolute left-0 top-0 flex h-full w-[280px] flex-col overflow-y-auto px-4 py-6 text-white"
-            style={{ background: "var(--forest)" }}
+            className="absolute left-0 top-0 flex h-full w-[280px] flex-col overflow-y-auto rounded-r-[28px] px-4 py-6 text-white shadow-2xl animate-[slideIn_0.25s_cubic-bezier(0.32,0.72,0,1)]"
+            style={{
+              background: "var(--forest)",
+              paddingTop: "calc(env(safe-area-inset-top) + 1.5rem)",
+              paddingBottom: "calc(env(safe-area-inset-bottom) + 1rem)",
+            }}
           >
             <div className="mb-5 flex items-center justify-between px-1">
               <span className="text-lg font-bold">Hi! Pie!</span>
@@ -237,11 +247,12 @@ export default function Sidebar({
         </div>
       )}
 
-      {/* ── Mobile bottom tab bar ── */}
+      {/* ── Mobile bottom tab bar (iOS-style frosted glass) ── */}
       <nav
-        className="fixed bottom-0 left-0 right-0 z-40 flex items-stretch justify-around border-t bg-white md:hidden"
+        className="fixed bottom-0 left-0 right-0 z-40 flex items-stretch justify-around backdrop-blur-xl md:hidden"
         style={{
-          borderColor: "var(--line)",
+          background: "rgba(255,255,255,0.78)",
+          borderTop: "0.5px solid rgba(15,92,62,0.15)",
           paddingBottom: "env(safe-area-inset-bottom)",
         }}
       >
@@ -251,11 +262,23 @@ export default function Sidebar({
             <Link
               key={item.href}
               href={item.href}
-              className="flex flex-1 flex-col items-center gap-0.5 py-2 text-[10.5px] font-semibold transition"
+              className="flex flex-1 flex-col items-center gap-0.5 py-2 text-[10.5px] font-semibold transition active:scale-90"
               style={{ color: active ? "var(--forest)" : "var(--muted)" }}
             >
-              <span className="text-[20px] leading-none">{item.icon}</span>
+              <span
+                className="text-[21px] leading-none transition-transform"
+                style={{ transform: active ? "translateY(-1px)" : "none" }}
+              >
+                {item.icon}
+              </span>
               {item.label}
+              <span
+                className="mt-0.5 h-[3px] w-[3px] rounded-full transition-opacity"
+                style={{
+                  background: "var(--forest)",
+                  opacity: active ? 1 : 0,
+                }}
+              />
             </Link>
           );
         })}
