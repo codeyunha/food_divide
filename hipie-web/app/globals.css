@@ -1,4 +1,4 @@
-@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css");
+@import url("https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap");
 @import "tailwindcss";
 
 :root {
@@ -23,14 +23,22 @@ body {
 }
 
 body {
-  font-family: "Pretendard", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: "Black Han Sans", sans-serif;
+  font-weight: 400;
+  font-style: normal;
   background: var(--cream);
   color: var(--ink);
   letter-spacing: -0.3px;
 }
 
-button {
+button,
+input,
+textarea,
+select {
   font-family: inherit;
+}
+
+button {
   cursor: pointer;
 }
 
