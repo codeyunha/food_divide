@@ -34,16 +34,16 @@ export default function Sidebar({ profile }: { profile: Profile | null }) {
       style={{ background: "var(--forest)" }}
     >
       <Link href="/home" className="mb-5 flex items-center gap-2.5 px-1">
-        <span className="h-9 w-9 overflow-hidden rounded-xl bg-white/10 p-1">
+        <span className="h-[108px] w-[108px]">
           <Image
-            src="/hipie.png"
+            src="/hipie_nobase_hitpaw.png"
             alt="Hi! Pie!"
-            width={36}
-            height={36}
+            width={108}
+            height={108}
             className="h-full w-full object-contain"
           />
         </span>
-        <span className="text-lg font-bold">Hi! Pie!</span>
+        <span className="text-[27px] font-bold">Hi! Pie!</span>
       </Link>
 
       <div className="mb-4 flex items-center gap-2.5 rounded-2xl bg-white/10 px-3.5 py-3.5">
