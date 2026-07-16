@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 import type { Profile } from "@/lib/types";
 
 const NAV = [
+  { href: "/home", label: "홈", icon: "🏠" },
   { href: "/dish", label: "완제품 파티", icon: "🍲" },
   { href: "/ingredient", label: "재료 파티", icon: "🥬" },
   { href: "/recipes", label: "레시피", icon: "🍳" },
@@ -31,7 +32,7 @@ export default function Sidebar({ profile }: { profile: Profile | null }) {
       className="flex w-[264px] flex-shrink-0 flex-col overflow-y-auto px-4 py-6 text-white"
       style={{ background: "var(--forest)" }}
     >
-      <Link href="/dish" className="mb-5 flex items-center gap-2.5 px-1">
+      <Link href="/home" className="mb-5 flex items-center gap-2.5 px-1">
         <span className="h-9 w-9 overflow-hidden rounded-xl bg-white/10 p-1">
           <Image
             src="/hipie.png"

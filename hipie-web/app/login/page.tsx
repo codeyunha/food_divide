@@ -32,7 +32,7 @@ export default function LoginPage() {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
       }
-      router.push("/dish");
+      router.push("/home");
       router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : "오류가 발생했어요");
