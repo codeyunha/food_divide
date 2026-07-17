@@ -46,27 +46,27 @@ export default function LoginPage() {
       className="flex min-h-screen items-center justify-center p-6"
       style={{ background: "var(--forest)" }}
     >
-      <div className="w-full max-w-sm rounded-3xl bg-white p-8 shadow-2xl">
-        <div className="mb-6 flex flex-col items-center text-center">
-          <div className="h-16 w-16 overflow-hidden rounded-2xl bg-[var(--forest-light)] p-1.5">
+      <div className="w-full max-w-md rounded-3xl bg-white p-9 shadow-2xl">
+        <div className="mb-7 flex flex-col items-center text-center">
+          <div className="h-[72px] w-[72px] overflow-hidden rounded-2xl bg-[var(--forest-light)] p-2">
             <Image
               src="/hipie.png"
               alt="Hi! Pie!"
-              width={64}
-              height={64}
+              width={72}
+              height={72}
               className="h-full w-full object-contain"
             />
           </div>
-          <h1 className="mt-3 text-2xl font-bold text-[var(--ink)]">Hi! Pie!</h1>
-          <p className="mt-1 text-sm text-[var(--muted)]">
+          <h1 className="mt-3.5 text-[28px] font-bold text-[var(--ink)]">Hi! Pie!</h1>
+          <p className="mt-1.5 text-[15px] text-[var(--muted)]">
             {mode === "signin" ? "다시 오셨네요!" : "소분 파티에 참여해보세요"}
           </p>
         </div>
 
-        <form onSubmit={submit} className="space-y-3">
+        <form onSubmit={submit} className="space-y-3.5">
           {mode === "signup" && (
             <input
-              className="w-full rounded-xl border border-[var(--line)] px-4 py-3 text-sm outline-none focus:border-[var(--forest)]"
+              className="w-full rounded-xl border border-[var(--line)] px-4 py-3.5 text-[15px] outline-none focus:border-[var(--forest)]"
               placeholder="닉네임"
               value={nickname}
               onChange={(e) => setNickname(e.target.value)}
@@ -75,7 +75,7 @@ export default function LoginPage() {
           <input
             type="email"
             required
-            className="w-full rounded-xl border border-[var(--line)] px-4 py-3 text-sm outline-none focus:border-[var(--forest)]"
+            className="w-full rounded-xl border border-[var(--line)] px-4 py-3.5 text-[15px] outline-none focus:border-[var(--forest)]"
             placeholder="이메일"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -84,7 +84,7 @@ export default function LoginPage() {
             type="password"
             required
             minLength={6}
-            className="w-full rounded-xl border border-[var(--line)] px-4 py-3 text-sm outline-none focus:border-[var(--forest)]"
+            className="w-full rounded-xl border border-[var(--line)] px-4 py-3.5 text-[15px] outline-none focus:border-[var(--forest)]"
             placeholder="비밀번호 (6자 이상)"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -95,7 +95,7 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-xl py-3 text-sm font-semibold text-white transition disabled:opacity-60"
+            className="w-full rounded-xl py-3.5 text-[15px] font-semibold text-white transition disabled:opacity-60"
             style={{ background: "var(--forest)" }}
           >
             {loading ? "처리 중..." : mode === "signin" ? "로그인" : "회원가입"}
@@ -107,14 +107,14 @@ export default function LoginPage() {
             setMode(mode === "signin" ? "signup" : "signin");
             setError(null);
           }}
-          className="mt-4 w-full text-center text-sm text-[var(--muted)] hover:text-[var(--forest)]"
+          className="mt-5 w-full text-center text-[15px] text-[var(--muted)] hover:text-[var(--forest)]"
         >
           {mode === "signin" ? "처음이신가요? 회원가입" : "이미 계정이 있어요 → 로그인"}
         </button>
 
         <Link
           href="/"
-          className="mt-2 block text-center text-xs text-[var(--muted)]/70 hover:underline"
+          className="mt-2.5 block text-center text-[13px] text-[var(--muted)]/70 hover:underline"
         >
           ← 홈으로
         </Link>

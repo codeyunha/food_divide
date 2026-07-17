@@ -96,23 +96,23 @@ function NewPartyForm() {
   }
 
   const field =
-    "w-full rounded-xl border border-[var(--line)] px-4 py-3 text-sm outline-none focus:border-[var(--forest)] bg-white";
-  const label = "mb-1.5 block text-[13px] font-semibold text-[var(--ink)]";
+    "w-full rounded-xl border border-[var(--line)] px-4 py-3.5 text-[15px] outline-none focus:border-[var(--forest)] bg-white";
+  const label = "mb-2 block text-sm font-semibold text-[var(--ink)]";
 
   return (
     <div className="max-w-2xl">
       <PageHead title="파티 개설" subtitle="나눌 음식의 정보를 정확히 등록해주세요" />
 
-      <form onSubmit={submit} className="space-y-5">
+      <form onSubmit={submit} className="space-y-6">
         <div>
           <span className={label}>유형 *</span>
-          <div className="flex gap-2">
+          <div className="flex gap-2.5">
             {(["finished", "ingredient"] as PartyType[]).map((t) => (
               <button
                 key={t}
                 type="button"
                 onClick={() => setType(t)}
-                className={`flex-1 rounded-xl border py-3 text-sm font-bold transition ${
+                className={`flex-1 rounded-xl border py-3.5 text-[15px] font-bold transition ${
                   type === t
                     ? "border-[var(--forest)] bg-[var(--forest-light)] text-[var(--forest)]"
                     : "border-[var(--line)] bg-white text-[var(--muted)]"
@@ -145,7 +145,7 @@ function NewPartyForm() {
             onChange={(e) => setPhotos(Array.from(e.target.files ?? []))}
           />
           {photos.length > 0 && (
-            <p className="mt-1 text-xs text-[var(--muted)]">{photos.length}장 선택됨</p>
+            <p className="mt-1.5 text-sm text-[var(--muted)]">{photos.length}장 선택됨</p>
           )}
         </div>
 
@@ -234,7 +234,7 @@ function NewPartyForm() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full rounded-xl py-3.5 text-sm font-bold text-white transition disabled:opacity-60"
+          className="w-full rounded-xl py-4 text-[15px] font-bold text-white transition disabled:opacity-60"
           style={{ background: "var(--forest)" }}
         >
           {loading ? "등록 중..." : "파티 개설하기"}

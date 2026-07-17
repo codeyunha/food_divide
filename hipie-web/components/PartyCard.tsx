@@ -52,11 +52,11 @@ export default function PartyCard({
   return (
     <Link
       href={`/party/${party.id}`}
-      className="group relative flex flex-col rounded-2xl border border-[var(--line)] bg-white p-5 transition hover:-translate-y-0.5 hover:shadow-lg"
+      className="group relative flex flex-col rounded-2xl border border-[var(--line)] bg-white p-6 transition hover:-translate-y-0.5 hover:shadow-lg"
     >
       {/* 우측 상단: 유통기한 임박도 */}
       <span
-        className="absolute right-4 top-4 rounded-full px-2.5 py-1 text-[11px] font-bold"
+        className="absolute right-5 top-5 rounded-full px-3 py-1.5 text-xs font-bold"
         style={{ color: u.text, background: u.bg }}
       >
         ⏰ {u.label}
@@ -66,37 +66,37 @@ export default function PartyCard({
       <button
         onClick={toggleFav}
         aria-label="찜하기"
-        className="absolute left-4 top-4 text-xl transition hover:scale-110"
+        className="absolute left-5 top-5 text-2xl transition hover:scale-110"
       >
         {fav ? "❤️" : "🤍"}
       </button>
 
-      <div className="mt-7 flex items-start gap-3">
-        <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-xl bg-[var(--forest-light)] text-2xl">
+      <div className="mt-8 flex items-start gap-3.5">
+        <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-xl bg-[var(--forest-light)] text-3xl">
           {emoji}
         </div>
         <div className="min-w-0">
-          <h4 className="truncate text-[16px] font-bold text-[var(--ink)]">
+          <h4 className="truncate text-[18px] font-bold text-[var(--ink)]">
             {party.title}
           </h4>
-          <p className="mt-0.5 text-xs text-[var(--muted)]">
+          <p className="mt-0.5 text-[13px] text-[var(--muted)]">
             {party.host?.nickname ?? "익명"} · 총 {party.total_amount}
           </p>
         </div>
       </div>
 
       {party.description && (
-        <p className="mt-3 line-clamp-2 text-[13px] leading-relaxed text-[var(--muted)]">
+        <p className="mt-3.5 line-clamp-2 text-sm leading-relaxed text-[var(--muted)]">
           {party.description}
         </p>
       )}
 
       {party.tags?.length > 0 && (
-        <div className="mt-3 flex flex-wrap gap-1.5">
+        <div className="mt-3.5 flex flex-wrap gap-2">
           {party.tags.slice(0, 4).map((t) => (
             <span
               key={t}
-              className="rounded-full bg-[var(--peach-2)] px-2 py-0.5 text-[11px] font-medium text-[var(--peach)]"
+              className="rounded-full bg-[var(--peach-2)] px-2.5 py-1 text-xs font-medium text-[var(--peach)]"
             >
               #{t}
             </span>
@@ -105,15 +105,15 @@ export default function PartyCard({
       )}
 
       {/* 참여 인원 시각화 */}
-      <div className="mt-4 border-t border-[var(--line)] pt-3">
-        <div className="mb-2 flex items-center justify-between">
+      <div className="mt-5 border-t border-[var(--line)] pt-4">
+        <div className="mb-2.5 flex items-center justify-between">
           <Participation joined={joined} cap={cap} />
-          <span className="text-[15px] font-bold text-[var(--ink)]">
+          <span className="text-[17px] font-bold text-[var(--ink)]">
             {won(party.price)}
           </span>
         </div>
         {cap > 0 && (
-          <div className="h-1.5 w-full overflow-hidden rounded-full bg-[var(--forest-light)]">
+          <div className="h-2 w-full overflow-hidden rounded-full bg-[var(--forest-light)]">
             <div
               className="h-full rounded-full transition-all"
               style={{
@@ -132,19 +132,19 @@ function Participation({ joined, cap }: { joined: number; cap: number }) {
   // capacity가 있으면 사람 아이콘으로 채움/빈칸 표시, 없으면 참여수만
   const total = cap > 0 ? Math.min(cap, 8) : Math.min(joined, 8);
   return (
-    <div className="flex items-center gap-1.5">
+    <div className="flex items-center gap-2">
       <span className="flex items-center gap-0.5">
         {Array.from({ length: total }).map((_, i) => (
           <span
             key={i}
-            className="text-[13px] leading-none"
+            className="text-sm leading-none"
             style={{ opacity: i < joined ? 1 : 0.25 }}
           >
             {i < joined ? "🧑" : "⚪"}
           </span>
         ))}
       </span>
-      <span className="text-[11.5px] font-semibold text-[var(--forest)]">
+      <span className="text-[12.5px] font-semibold text-[var(--forest)]">
         {joined}
         {cap > 0 ? `/${cap}` : ""}명
         {cap > 0 && joined >= cap ? " 마감" : " 참여중"}

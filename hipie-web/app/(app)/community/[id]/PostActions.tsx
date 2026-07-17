@@ -24,17 +24,17 @@ export default function PostActions({ postId }: { postId: string }) {
   }
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-2.5">
       <Link
         href={`/community/${postId}/edit`}
-        className="rounded-lg border border-[var(--line)] px-3 py-1.5 text-xs font-semibold text-[var(--muted)] transition hover:bg-[var(--cream)]"
+        className="rounded-lg border border-[var(--line)] px-3.5 py-2 text-[13px] font-semibold text-[var(--muted)] transition hover:bg-[var(--cream)]"
       >
         수정
       </Link>
       <button
         onClick={remove}
         disabled={loading}
-        className="rounded-lg border border-red-200 px-3 py-1.5 text-xs font-semibold text-red-500 transition hover:bg-red-50 disabled:opacity-60"
+        className="rounded-lg border border-red-200 px-3.5 py-2 text-[13px] font-semibold text-red-500 transition hover:bg-red-50 disabled:opacity-60"
       >
         삭제
       </button>

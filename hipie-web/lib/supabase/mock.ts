@@ -8,7 +8,7 @@ type Row = Record<string, unknown>;
 
 const store: Record<string, Row[]> = {
   profiles: [
-    { id: MOCK_USER.id, nickname: "테스트유저", avatar_url: null, manner_score: 36.5 },
+    { id: MOCK_USER.id, nickname: "테스트유저", avatar_url: null, manner_score: 50 },
   ],
 };
 
@@ -193,7 +193,50 @@ export function createMockClient() {
     from(name: string) {
       return new MockBuilder(name);
     },
-    async rpc() {
+    async rpc(fn: string, params?: Record<string, unknown>) {
+      if (fn === "cast_manner_vote") {
+        const partyId = params?.p_party_id as string;
+        const voteVal = params?.p_vote as 1 | -1;
+        const party = table("parties").find((p) => p.id === partyId);
+        if (!party) return { data: null, error: { message: "party not found" } };
+        const hostId = party.host_id as string;
+        if (hostId === MOCK_USER.id) {
+          return { data: null, error: { message: "cannot vote for own party" } };
+        }
+        const isMember = table("party_members").some(
+          (m) => m.party_id === partyId && m.user_id === MOCK_USER.id
+        );
+        if (!isMember) {
+          return { data: null, error: { message: "must join the party to vote" } };
+        }
+        const votes = table("manner_votes");
+        const existing = votes.find(
+          (v) => v.party_id === partyId && v.voter_id === MOCK_USER.id
+        );
+        let delta = 0;
+        if (!existing) {
+          votes.push({
+            party_id: partyId,
+            voter_id: MOCK_USER.id,
+            target_id: hostId,
+            vote: voteVal,
+          });
+          delta = voteVal;
+        } else if (existing.vote === voteVal) {
+          const idx = votes.indexOf(existing);
+          votes.splice(idx, 1);
+          delta = -voteVal;
+        } else {
+          existing.vote = voteVal;
+          delta = voteVal * 2;
+        }
+        const host = table("profiles").find((p) => p.id === hostId);
+        if (host) {
+          const current = (host.manner_score as number) ?? 50;
+          host.manner_score = Math.max(0, Math.min(100, current + delta));
+        }
+        return { data: host?.manner_score ?? null, error: null };
+      }
       return { data: [], error: null };
     },
     storage: {

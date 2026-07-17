@@ -33,10 +33,10 @@ export default async function PostDetail({
         ← 목록으로
       </Link>
 
-      <div className="rounded-2xl border border-[var(--line)] bg-white p-7">
-        <div className="mb-4 flex items-start justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center overflow-hidden rounded-xl bg-[var(--forest-light)] text-xl">
+      <div className="rounded-2xl border border-[var(--line)] bg-white p-8">
+        <div className="mb-5 flex items-start justify-between gap-4">
+          <div className="flex items-center gap-3.5">
+            <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center overflow-hidden rounded-xl bg-[var(--forest-light)] text-2xl">
               {post.author?.avatar_url ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
@@ -49,10 +49,10 @@ export default async function PostDetail({
               )}
             </div>
             <div>
-              <p className="text-sm font-bold text-[var(--ink)]">
+              <p className="text-[15px] font-bold text-[var(--ink)]">
                 {post.author?.nickname ?? "익명"}
               </p>
-              <p className="text-xs text-[var(--muted)]">
+              <p className="text-[13px] text-[var(--muted)]">
                 {timeAgo(post.created_at)}
                 {post.updated_at !== post.created_at && " · 수정됨"}
               </p>
@@ -61,10 +61,10 @@ export default async function PostDetail({
           {isAuthor && <PostActions postId={post.id} />}
         </div>
 
-        <h1 className="mb-5 text-2xl font-bold text-[var(--ink)]">{post.title}</h1>
+        <h1 className="mb-6 text-3xl font-bold text-[var(--ink)]">{post.title}</h1>
 
         {post.images?.length > 0 && (
-          <div className="mb-5 flex flex-col gap-3">
+          <div className="mb-6 flex flex-col gap-3.5">
             {post.images.map((src) => (
               // eslint-disable-next-line @next/next/no-img-element
               <img
@@ -77,7 +77,7 @@ export default async function PostDetail({
           </div>
         )}
 
-        <div className="whitespace-pre-wrap text-sm leading-relaxed text-[var(--ink)]">
+        <div className="whitespace-pre-wrap text-[15px] leading-relaxed text-[var(--ink)]">
           {post.content}
         </div>
       </div>

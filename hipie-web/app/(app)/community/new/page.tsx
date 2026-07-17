@@ -64,14 +64,14 @@ export default function NewPostPage() {
   }
 
   const field =
-    "w-full rounded-xl border border-[var(--line)] px-4 py-3 text-sm outline-none focus:border-[var(--forest)] bg-white";
-  const label = "mb-1.5 block text-[13px] font-semibold text-[var(--ink)]";
+    "w-full rounded-xl border border-[var(--line)] px-4 py-3.5 text-[15px] outline-none focus:border-[var(--forest)] bg-white";
+  const label = "mb-2 block text-sm font-semibold text-[var(--ink)]";
 
   return (
     <div className="max-w-2xl">
       <PageHead title="글쓰기" subtitle="이웃과 나누고 싶은 이야기를 남겨보세요" />
 
-      <form onSubmit={submit} className="space-y-5">
+      <form onSubmit={submit} className="space-y-6">
         <div>
           <label className={label}>제목 *</label>
           <input
@@ -105,7 +105,7 @@ export default function NewPostPage() {
             onChange={(e) => setImages(Array.from(e.target.files ?? []))}
           />
           {images.length > 0 && (
-            <p className="mt-1 text-xs text-[var(--muted)]">{images.length}장 선택됨</p>
+            <p className="mt-1.5 text-sm text-[var(--muted)]">{images.length}장 선택됨</p>
           )}
         </div>
 
@@ -114,7 +114,7 @@ export default function NewPostPage() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full rounded-xl py-3.5 text-sm font-bold text-white transition disabled:opacity-60"
+          className="w-full rounded-xl py-4 text-[15px] font-bold text-white transition disabled:opacity-60"
           style={{ background: "var(--forest)" }}
         >
           {loading ? "등록 중..." : "게시하기"}

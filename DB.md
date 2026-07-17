@@ -32,6 +32,7 @@ auth.users ─1:1─ profiles
                     │
                     ├─1:N─ parties (host_id)
                     │         ├─1:N─ party_members ─N:1─ profiles
+                    │         ├─1:N─ manner_votes ─N:1─ profiles (voter_id → target_id = host_id)
                     │         ├─1:N─ favorites ─N:1─ profiles
                     │         └─1:1─ chat_rooms ─1:N─ messages ─N:1─ profiles
                     │
@@ -63,7 +64,7 @@ create table public.profiles (
   id            uuid primary key references auth.users(id) on delete cascade,
   nickname      text not null,
   avatar_url    text,
-  manner_score  numeric(4,1) not null default 36.5,   -- 매너온도
+  manner_score  integer not null default 50 check (manner_score >= 0 and manner_score <= 100), -- 내 그릇 (0~100, 기본 50)
   created_at    timestamptz not null default now(),
   updated_at    timestamptz not null default now()
 );
@@ -74,7 +75,7 @@ create table public.profiles (
 | `id` | `auth.users.id` 와 동일 (PK/FK) |
 | `nickname` | 표시 닉네임 (필수) |
 | `avatar_url` | Storage `avatars` 버킷 경로 |
-| `manner_score` | 매너온도, 기본 36.5 |
+| `manner_score` | 내 그릇 점수, 0~100 정수, 기본 50 |
 
 > 신규 가입 시 트리거로 profiles 자동 생성(§8 참조).
 
@@ -135,6 +136,27 @@ create index party_members_user_idx on public.party_members (user_id);
 ```
 
 > 파티장도 참여자로 자동 등록(트리거, §8). "내 파티 목록"은 `host_id` + `party_members` 조합으로 조회.
+
+---
+
+### 4.3a manner_votes — "내 그릇" 추천/비추천 (파티당 1인 1표)
+
+```sql
+create table public.manner_votes (
+  party_id   uuid not null references public.parties(id) on delete cascade,
+  voter_id   uuid not null references public.profiles(id) on delete cascade,
+  target_id  uuid not null references public.profiles(id) on delete cascade,
+  vote       smallint not null check (vote in (-1, 1)),      -- +1 추천 / -1 비추천
+  created_at timestamptz not null default now(),
+  primary key (party_id, voter_id)
+);
+
+create index manner_votes_target_idx on public.manner_votes (target_id);
+```
+
+- 파티에 참여한 사용자만 그 파티의 호스트에게 투표 가능(호스트 본인 제외), 파티당 1표.
+- 같은 방향 재클릭 = 투표 취소, 반대 방향 클릭 = 투표 전환. `cast_manner_vote()` 함수(§5.1)가 처리.
+- 실제 마이그레이션 SQL: `hipie-web/supabase/migrations/0002_manner_bowl.sql`
 
 ---
 
@@ -261,7 +283,53 @@ create index comments_post_idx on public.comments (post_id, created_at);
 
 ---
 
-## 5. 레시피 추천 매칭 (핵심 로직)
+## 5. 함수
+
+### 5.1 cast_manner_vote — "내 그릇" 추천/비추천 처리
+
+파티원이 파티장의 "내 그릇" 점수에 투표. 파티당 1표, 같은 방향 재클릭 시 취소, 반대 방향 클릭 시 전환, 결과는 0~100으로 clamp.
+
+```sql
+create or replace function public.cast_manner_vote(p_party_id uuid, p_vote smallint)
+returns integer
+language plpgsql security definer set search_path = public as $$
+declare
+  v_host_id   uuid;
+  v_existing  smallint;
+  v_delta     smallint;
+  v_new_score integer;
+begin
+  if p_vote not in (-1, 1) then raise exception 'invalid vote value'; end if;
+  select host_id into v_host_id from public.parties where id = p_party_id;
+  if v_host_id is null then raise exception 'party not found'; end if;
+  if v_host_id = auth.uid() then raise exception 'cannot vote for own party'; end if;
+  if not exists (select 1 from public.party_members where party_id = p_party_id and user_id = auth.uid()) then
+    raise exception 'must join the party to vote';
+  end if;
+
+  select vote into v_existing from public.manner_votes where party_id = p_party_id and voter_id = auth.uid();
+
+  if v_existing is null then
+    insert into public.manner_votes (party_id, voter_id, target_id, vote) values (p_party_id, auth.uid(), v_host_id, p_vote);
+    v_delta := p_vote;
+  elsif v_existing = p_vote then
+    delete from public.manner_votes where party_id = p_party_id and voter_id = auth.uid();
+    v_delta := -p_vote;
+  else
+    update public.manner_votes set vote = p_vote, created_at = now() where party_id = p_party_id and voter_id = auth.uid();
+    v_delta := p_vote * 2;
+  end if;
+
+  update public.profiles set manner_score = greatest(0, least(100, manner_score + v_delta))
+    where id = v_host_id returning manner_score into v_new_score;
+  return v_new_score;
+end;
+$$;
+```
+
+> 실제 마이그레이션 SQL: `hipie-web/supabase/migrations/0002_manner_bowl.sql`
+
+### 5.2 레시피 추천 매칭 (핵심 로직)
 
 파티/보유 재료 태그(`text[]`)와 레시피의 `ingredient_tokens(text[])`를 **배열 겹침(overlap)** 으로 매칭, 일치 개수로 정렬.
 
@@ -321,6 +389,7 @@ RLS 정책을 둔다. 전체 SQL은 `hipie-web/supabase/migrations/0001_communit
 alter table public.profiles      enable row level security;
 alter table public.parties       enable row level security;
 alter table public.party_members enable row level security;
+alter table public.manner_votes  enable row level security;
 alter table public.favorites     enable row level security;
 alter table public.chat_rooms    enable row level security;
 alter table public.messages      enable row level security;
@@ -347,6 +416,15 @@ create policy "members read all"    on public.party_members for select using (tr
 create policy "members join self"   on public.party_members for insert with check (auth.uid() = user_id);
 create policy "members leave self"  on public.party_members for delete using (auth.uid() = user_id);
 ```
+
+### manner_votes ("내 그릇" 추천/비추천)
+```sql
+create policy "manner_votes read all"    on public.manner_votes for select using (true);
+create policy "manner_votes insert self" on public.manner_votes for insert with check (auth.uid() = voter_id);
+create policy "manner_votes update self" on public.manner_votes for update using (auth.uid() = voter_id);
+create policy "manner_votes delete self" on public.manner_votes for delete using (auth.uid() = voter_id);
+```
+> 실제 점수 반영은 `cast_manner_vote()`(§5.1, `security definer`)를 통해서만 이루어짐 — 파티원이 다른 사람의 `profiles.manner_score`를 직접 UPDATE할 권한은 없음.
 
 ### favorites (본인만)
 ```sql
@@ -480,5 +558,5 @@ create trigger trg_parties_updated  before update on public.parties
 ## 11. 향후 확장 (Out of Scope, PRD §10 연계)
 - `party_reviews` (파티 후기), `notifications` (알림함)
 - `price_basis`(전체/1인분) ENUM 컬럼
-- 매너온도 변동 이력 테이블, 랭킹 뷰
+- "내 그릇" 랭킹 뷰 (현재는 `manner_votes` 자체가 투표 이력 역할)
 - 결제/정산 테이블

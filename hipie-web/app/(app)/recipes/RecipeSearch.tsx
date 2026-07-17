@@ -57,9 +57,9 @@ export default function RecipeSearch() {
   }
 
   return (
-    <div className="mb-10">
+    <div className="mb-11">
       {/* 모드 토글 */}
-      <div className="mb-3 inline-flex rounded-xl border border-[var(--line)] bg-white p-1">
+      <div className="mb-4 inline-flex rounded-xl border border-[var(--line)] bg-white p-1">
         {(
           [
             { m: "ingredient" as Mode, label: "🥕 재료로 추천" },
@@ -69,7 +69,7 @@ export default function RecipeSearch() {
           <button
             key={m}
             onClick={() => switchMode(m)}
-            className={`rounded-lg px-4 py-2 text-sm font-semibold transition ${
+            className={`rounded-lg px-5 py-2.5 text-[15px] font-semibold transition ${
               mode === m
                 ? "bg-[var(--forest)] text-white"
                 : "text-[var(--muted)] hover:text-[var(--forest)]"
@@ -80,9 +80,9 @@ export default function RecipeSearch() {
         ))}
       </div>
 
-      <form onSubmit={search} className="flex gap-2">
+      <form onSubmit={search} className="flex gap-2.5">
         <input
-          className="flex-1 rounded-xl border border-[var(--line)] bg-white px-4 py-3 text-sm outline-none focus:border-[var(--forest)]"
+          className="flex-1 rounded-xl border border-[var(--line)] bg-white px-4 py-3.5 text-[15px] outline-none focus:border-[var(--forest)]"
           placeholder={
             mode === "ingredient"
               ? "가진 재료를 입력하세요 (예: 달걀, 두부, 시금치)"
@@ -93,7 +93,7 @@ export default function RecipeSearch() {
         />
         <button
           type="submit"
-          className="rounded-xl px-6 text-sm font-bold text-white"
+          className="rounded-xl px-7 text-[15px] font-bold text-white"
           style={{ background: "var(--forest)" }}
         >
           {mode === "ingredient" ? "추천받기" : "검색"}
@@ -101,20 +101,20 @@ export default function RecipeSearch() {
       </form>
 
       {loading && (
-        <p className="mt-4 text-sm text-[var(--muted)]">레시피를 찾는 중...</p>
+        <p className="mt-4 text-[15px] text-[var(--muted)]">레시피를 찾는 중...</p>
       )}
 
       {results && !loading && (
-        <div className="mt-5">
-          <h3 className="mb-3 text-sm font-bold text-[var(--ink)]">
+        <div className="mt-6">
+          <h3 className="mb-4 text-[15px] font-bold text-[var(--ink)]">
             {mode === "ingredient" ? "추천 결과" : "검색 결과"} {results.length}개
           </h3>
           {results.length === 0 ? (
-            <p className="text-sm text-[var(--muted)]">
+            <p className="text-[15px] text-[var(--muted)]">
               일치하는 레시피가 없어요. 다른 키워드로 시도해보세요.
             </p>
           ) : (
-            <div className="grid grid-cols-[repeat(auto-fill,minmax(180px,1fr))] gap-4">
+            <div className="grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-5">
               {results.map((r) => (
                 <RecipeCard
                   key={r.id}

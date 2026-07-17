@@ -66,13 +66,13 @@ export default function ProfileForm({
   }
 
   return (
-    <div className="max-w-sm space-y-6">
+    <div className="max-w-sm space-y-7">
       <div>
-        <span className="mb-1.5 block text-[13px] font-semibold text-[var(--ink)]">
+        <span className="mb-2 block text-sm font-semibold text-[var(--ink)]">
           프로필 사진
         </span>
         <div className="flex items-center gap-4">
-          <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-[var(--forest-light)] text-2xl">
+          <div className="flex h-[72px] w-[72px] flex-shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-[var(--forest-light)] text-3xl">
             {avatarUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={avatarUrl} alt="" className="h-full w-full object-cover" />
@@ -80,7 +80,7 @@ export default function ProfileForm({
               "🐤"
             )}
           </div>
-          <label className="cursor-pointer rounded-xl border border-[var(--line)] bg-white px-4 py-2.5 text-sm font-semibold text-[var(--ink)] transition hover:bg-[var(--cream)]">
+          <label className="cursor-pointer rounded-xl border border-[var(--line)] bg-white px-5 py-3 text-[15px] font-semibold text-[var(--ink)] transition hover:bg-[var(--cream)]">
             {uploading ? "업로드 중..." : "사진 변경"}
             <input
               type="file"
@@ -97,13 +97,13 @@ export default function ProfileForm({
         {error && <p className="mt-2 text-sm text-red-500">{error}</p>}
       </div>
 
-      <form onSubmit={save} className="space-y-3">
+      <form onSubmit={save} className="space-y-3.5">
         <div>
-          <label className="mb-1.5 block text-[13px] font-semibold text-[var(--ink)]">
+          <label className="mb-2 block text-sm font-semibold text-[var(--ink)]">
             닉네임
           </label>
           <input
-            className="w-full rounded-xl border border-[var(--line)] bg-white px-4 py-3 text-sm outline-none focus:border-[var(--forest)]"
+            className="w-full rounded-xl border border-[var(--line)] bg-white px-4 py-3.5 text-[15px] outline-none focus:border-[var(--forest)]"
             value={nickname}
             onChange={(e) => {
               setNickname(e.target.value);
@@ -114,7 +114,7 @@ export default function ProfileForm({
         <button
           type="submit"
           disabled={saving}
-          className="rounded-xl px-5 py-2.5 text-sm font-bold text-white disabled:opacity-60"
+          className="rounded-xl px-6 py-3 text-[15px] font-bold text-white disabled:opacity-60"
           style={{ background: "var(--forest)" }}
         >
           {saving ? "저장 중..." : "저장"}
