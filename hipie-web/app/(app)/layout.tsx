@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import Sidebar from "./Sidebar";
+import ChatbotLauncher from "@/components/ChatbotLauncher";
 import type { Profile } from "@/lib/types";
 
 export default async function AppLayout({
@@ -25,6 +26,7 @@ export default async function AppLayout({
     <div className="flex h-screen">
       <Sidebar profile={(profile as Profile) ?? null} />
       <main className="flex-1 overflow-y-auto px-16 py-12">{children}</main>
+      <ChatbotLauncher />
     </div>
   );
 }
