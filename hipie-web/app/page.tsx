@@ -29,12 +29,12 @@ export default function SplashPage() {
       />
 
       <div className="relative z-10 flex flex-col items-center px-6 text-center">
-        <div className="mb-7 h-32 w-32 overflow-hidden rounded-[28px] bg-white/10 p-2.5 shadow-2xl">
+        <div className="mb-7 h-64 w-64 overflow-hidden">
           <Image
-            src="/hipie.png"
+            src="/hipie_nobase_hitpaw.com.png"
             alt="Hi! Pie!"
-            width={128}
-            height={128}
+            width={256}
+            height={256}
             className="h-full w-full object-contain"
           />
         </div>
