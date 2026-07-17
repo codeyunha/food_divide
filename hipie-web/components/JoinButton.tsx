@@ -9,11 +9,13 @@ export default function JoinButton({
   isMember,
   isHost,
   partyType,
+  isBanned = false,
 }: {
   partyId: string;
   isMember: boolean;
   isHost: boolean;
   partyType: "finished" | "ingredient";
+  isBanned?: boolean;
 }) {
   const router = useRouter();
   const supabase = createClient();
@@ -33,7 +35,16 @@ export default function JoinButton({
       .from("party_members")
       .insert({ party_id: partyId, user_id: user.id });
     setLoading(false);
-    if (!error) router.refresh();
+    if (error) {
+      // DB 트리거가 차단 사용자를 막으면 안내
+      alert(
+        error.message?.includes("BANNED") || error.message?.includes("추방")
+          ? "이 파티에서 추방되어 다시 참여할 수 없습니다."
+          : "참여에 실패했어요: " + error.message
+      );
+      return;
+    }
+    router.refresh();
   }
 
   async function leave() {
@@ -100,6 +111,15 @@ export default function JoinButton({
         >
           🚪 파티 나가기
         </button>
+      </div>
+    );
+  }
+
+  // 추방됨: 참여 불가
+  if (isBanned) {
+    return (
+      <div className="w-full rounded-xl border border-red-200 bg-red-50 py-4 text-center text-[15px] font-bold text-red-500">
+        🚫 이 파티에서 추방되어 참여할 수 없습니다
       </div>
     );
   }

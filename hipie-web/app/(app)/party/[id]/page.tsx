@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getParty } from "@/lib/queries";
 import JoinButton from "@/components/JoinButton";
 import MannerVoteButtons from "@/components/MannerVoteButtons";
+import PartyMembers, { type PartyMember } from "@/components/PartyMembers";
 import Chat from "@/components/Chat";
 import type { Message } from "@/lib/types";
 import { won, dateKo, daysLeft } from "@/lib/format";
@@ -34,6 +35,18 @@ export default async function PartyDetail({
   const isHost = !!user && user.id === party.host_id;
   const canVote = isMember && !isHost;
 
+  // 추방(영구 차단) 여부 — 비참여자만 확인
+  let isBanned = false;
+  if (user && !isMember && !isHost) {
+    const { data: banRow } = await supabase
+      .from("party_bans")
+      .select("user_id")
+      .eq("party_id", id)
+      .eq("user_id", user.id)
+      .maybeSingle();
+    isBanned = !!banRow;
+  }
+
   let myVote: 1 | -1 | null = null;
   if (canVote && user) {
     const { data: voteRow } = await supabase
@@ -58,6 +71,7 @@ export default async function PartyDetail({
   let roomId: string | null = null;
   let messages: Message[] = [];
   const names: Record<string, string> = {};
+  let memberProfiles: PartyMember[] = [];
   if (isMember || isHost) {
     const { data: room } = await supabase
       .from("chat_rooms")
@@ -75,9 +89,17 @@ export default async function PartyDetail({
     }
     const { data: profs } = await supabase
       .from("profiles")
-      .select("id, nickname")
+      .select("id, nickname, avatar_url")
       .in("id", memberIds.length ? memberIds : ["_"]);
     (profs ?? []).forEach((p) => (names[p.id as string] = p.nickname as string));
+    // 파티장을 제외한 참여 멤버 목록
+    memberProfiles = (profs ?? [])
+      .filter((p) => (p.id as string) !== party.host_id)
+      .map((p) => ({
+        id: p.id as string,
+        nickname: p.nickname as string,
+        avatar_url: (p.avatar_url as string | null) ?? null,
+      }));
   }
 
   const left = daysLeft(party.expiry_date);
@@ -182,8 +204,28 @@ export default async function PartyDetail({
           isMember={isMember}
           isHost={isHost}
           partyType={party.type}
+          isBanned={isBanned}
         />
       </div>
+
+      {/* 파티원 목록 (참여자만) */}
+      {(isMember || isHost) && (
+        <PartyMembers
+          partyId={party.id}
+          host={
+            party.host
+              ? {
+                  id: party.host.id,
+                  nickname: party.host.nickname ?? "익명",
+                  avatar_url: party.host.avatar_url ?? null,
+                }
+              : null
+          }
+          members={memberProfiles}
+          isHost={isHost}
+          currentUserId={user?.id ?? null}
+        />
+      )}
 
       {/* chat */}
       {(isMember || isHost) && roomId && user && (
