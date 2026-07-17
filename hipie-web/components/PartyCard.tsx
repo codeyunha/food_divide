@@ -49,63 +49,75 @@ export default function PartyCard({
     setBusy(false);
   }
 
+  const cover = party.photos?.[0] ?? null;
+
   return (
     <Link
       href={`/party/${party.id}`}
-      className="group relative flex flex-col rounded-2xl border border-[var(--line)] bg-white p-6 transition hover:-translate-y-0.5 hover:shadow-lg"
+      className="group relative flex flex-col overflow-hidden rounded-2xl border border-[var(--line)] bg-white transition hover:-translate-y-0.5 hover:shadow-lg"
     >
-      {/* 우측 상단: 유통기한 임박도 */}
-      <span
-        className="absolute right-5 top-5 rounded-full px-3 py-1.5 text-xs font-bold"
-        style={{ color: u.text, background: u.bg }}
-      >
-        ⏰ {u.label}
-      </span>
+      {/* 커버: 유저가 올린 음식 사진 (없으면 이모지 플레이스홀더) */}
+      <div className="relative h-44 w-full overflow-hidden bg-[var(--forest-light)]">
+        {cover ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={cover}
+            alt={party.title}
+            className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+          />
+        ) : (
+          <div className="flex h-full items-center justify-center text-5xl">
+            {emoji}
+          </div>
+        )}
 
-      {/* 좌측 상단: 찜하기 */}
-      <button
-        onClick={toggleFav}
-        aria-label="찜하기"
-        className="absolute left-5 top-5 text-2xl transition hover:scale-110"
-      >
-        {fav ? "❤️" : "🤍"}
-      </button>
+        {/* 우측 상단: 유통기한 임박도 */}
+        <span
+          className="absolute right-3 top-3 rounded-full px-3 py-1.5 text-xs font-bold shadow-sm"
+          style={{ color: u.text, background: u.bg }}
+        >
+          ⏰ {u.label}
+        </span>
 
-      <div className="mt-8 flex items-start gap-3.5">
-        <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-xl bg-[var(--forest-light)] text-3xl">
-          {emoji}
-        </div>
-        <div className="min-w-0">
-          <h4 className="truncate text-[18px] font-bold text-[var(--ink)]">
-            {party.title}
-          </h4>
-          <p className="mt-0.5 text-[13px] text-[var(--muted)]">
-            {party.host?.nickname ?? "익명"} · 총 {party.total_amount}
-          </p>
-        </div>
+        {/* 좌측 상단: 찜하기 */}
+        <button
+          onClick={toggleFav}
+          aria-label="찜하기"
+          className="absolute left-3 top-3 flex h-9 w-9 items-center justify-center rounded-full bg-white/85 text-xl shadow-sm backdrop-blur transition hover:scale-110"
+        >
+          {fav ? "❤️" : "🤍"}
+        </button>
       </div>
 
-      {party.description && (
-        <p className="mt-3.5 line-clamp-2 text-sm leading-relaxed text-[var(--muted)]">
-          {party.description}
+      <div className="flex flex-col p-6 pt-4">
+        <h4 className="truncate text-[18px] font-bold text-[var(--ink)]">
+          {party.title}
+        </h4>
+        <p className="mt-0.5 text-[13px] text-[var(--muted)]">
+          {party.host?.nickname ?? "익명"} · 총 {party.total_amount}
         </p>
-      )}
 
-      {party.tags?.length > 0 && (
-        <div className="mt-3.5 flex flex-wrap gap-2">
-          {party.tags.slice(0, 4).map((t) => (
-            <span
-              key={t}
-              className="rounded-full bg-[var(--peach-2)] px-2.5 py-1 text-xs font-medium text-[var(--peach)]"
-            >
-              #{t}
-            </span>
-          ))}
-        </div>
-      )}
+        {party.description && (
+          <p className="mt-3.5 line-clamp-2 text-sm leading-relaxed text-[var(--muted)]">
+            {party.description}
+          </p>
+        )}
 
-      {/* 참여 인원 시각화 */}
-      <div className="mt-5 border-t border-[var(--line)] pt-4">
+        {party.tags?.length > 0 && (
+          <div className="mt-3.5 flex flex-wrap gap-2">
+            {party.tags.slice(0, 4).map((t) => (
+              <span
+                key={t}
+                className="rounded-full bg-[var(--peach-2)] px-2.5 py-1 text-xs font-medium text-[var(--peach)]"
+              >
+                #{t}
+              </span>
+            ))}
+          </div>
+        )}
+
+        {/* 참여 인원 시각화 */}
+        <div className="mt-5 border-t border-[var(--line)] pt-4">
         <div className="mb-2.5 flex items-center justify-between">
           <Participation joined={joined} cap={cap} />
           <span className="text-[17px] font-bold text-[var(--ink)]">
@@ -123,6 +135,7 @@ export default function PartyCard({
             />
           </div>
         )}
+        </div>
       </div>
     </Link>
   );
