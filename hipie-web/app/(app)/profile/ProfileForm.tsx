@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { makeStorageKey } from "@/lib/upload";
 
 export default function ProfileForm({
   userId,
@@ -26,7 +27,7 @@ export default function ProfileForm({
     setUploading(true);
     setError(null);
     try {
-      const path = `${userId}/${Date.now()}-${file.name}`;
+      const path = makeStorageKey(userId, file);
       const { error: upErr } = await supabase.storage
         .from("avatars")
         .upload(path, file);

@@ -4,6 +4,7 @@ import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import PageHead from "@/components/PageHead";
+import { makeStorageKey } from "@/lib/upload";
 import type { PartyType } from "@/lib/types";
 
 function NewPartyForm() {
@@ -50,7 +51,7 @@ function NewPartyForm() {
       const photoUrls: string[] = [];
       for (let i = 0; i < photos.length; i++) {
         const f = photos[i];
-        const path = `${user.id}/${Date.now()}-${i}-${f.name}`;
+        const path = makeStorageKey(user.id, f, i);
         const { error: upErr } = await supabase.storage
           .from("party-photos")
           .upload(path, f);
@@ -61,7 +62,7 @@ function NewPartyForm() {
       }
 
       // upload receipt (private bucket → store path)
-      const receiptPath = `${user.id}/${Date.now()}-${receipt.name}`;
+      const receiptPath = makeStorageKey(user.id, receipt);
       const { error: rErr } = await supabase.storage
         .from("receipts")
         .upload(receiptPath, receipt);

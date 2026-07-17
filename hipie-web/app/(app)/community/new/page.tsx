@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import PageHead from "@/components/PageHead";
+import { makeStorageKey } from "@/lib/upload";
 
 export default function NewPostPage() {
   const router = useRouter();
@@ -32,7 +33,7 @@ export default function NewPostPage() {
       const imageUrls: string[] = [];
       for (let i = 0; i < images.length; i++) {
         const f = images[i];
-        const path = `${user.id}/${Date.now()}-${i}-${f.name}`;
+        const path = makeStorageKey(user.id, f, i);
         const { error: upErr } = await supabase.storage
           .from("post-images")
           .upload(path, f);
