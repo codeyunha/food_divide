@@ -38,7 +38,15 @@ export async function proxy(request: NextRequest) {
   const path = request.nextUrl.pathname;
   const isAuthPage = path === "/login";
   const isPublicAsset =
-    path.startsWith("/_next") || path === "/" || path.startsWith("/favicon");
+    path.startsWith("/_next") ||
+    path === "/" ||
+    path.startsWith("/favicon") ||
+    // PWA 리소스 및 오프라인 폴백은 미인증 상태에서도 접근 가능해야 한다
+    path === "/offline" ||
+    path === "/sw.js" ||
+    path === "/manifest.webmanifest" ||
+    path === "/manifest.json" ||
+    path.startsWith("/icons");
 
   if (!user && !isAuthPage && !isPublicAsset) {
     const url = request.nextUrl.clone();

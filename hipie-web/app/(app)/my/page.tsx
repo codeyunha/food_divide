@@ -21,7 +21,7 @@ export default async function MyPartiesPage() {
         {hosted.length === 0 ? (
           <p className="text-[15px] text-[var(--muted)]">개설한 파티가 없어요.</p>
         ) : (
-          <div className="grid grid-cols-[repeat(auto-fill,minmax(320px,1fr))] gap-6">
+          <div className="grid grid-cols-[repeat(auto-fill,minmax(min(320px,100%),1fr))] gap-5 md:gap-6">
             {hosted.map((p) => (
               <PartyCard key={p.id} party={p} initialFavorite={favIds.has(p.id)} />
             ))}
@@ -36,7 +36,7 @@ export default async function MyPartiesPage() {
         {joined.length === 0 ? (
           <p className="text-[15px] text-[var(--muted)]">참여한 파티가 없어요.</p>
         ) : (
-          <div className="grid grid-cols-[repeat(auto-fill,minmax(320px,1fr))] gap-6">
+          <div className="grid grid-cols-[repeat(auto-fill,minmax(min(320px,100%),1fr))] gap-5 md:gap-6">
             {joined.map((p) => (
               <PartyCard key={p.id} party={p} initialFavorite={favIds.has(p.id)} />
             ))}

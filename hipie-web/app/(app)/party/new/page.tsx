@@ -169,7 +169,7 @@ function NewPartyForm() {
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
             <label className={label}>가격(원) *</label>
             <input
@@ -194,7 +194,7 @@ function NewPartyForm() {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
             <label className={label}>전체 용량 / 개수 *</label>
             <input
