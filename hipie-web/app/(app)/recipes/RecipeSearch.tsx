@@ -82,7 +82,7 @@ export default function RecipeSearch() {
 
       <form onSubmit={search} className="flex gap-2.5">
         <input
-          className="flex-1 rounded-xl border border-[var(--line)] bg-white px-4 py-3.5 text-[15px] outline-none focus:border-[var(--forest)]"
+          className="w-full min-w-0 flex-1 rounded-xl border border-[var(--line)] bg-white px-4 py-3.5 text-[15px] outline-none focus:border-[var(--forest)]"
           placeholder={
             mode === "ingredient"
               ? "가진 재료를 입력하세요 (예: 달걀, 두부, 시금치)"
