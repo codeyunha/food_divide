@@ -19,7 +19,7 @@ export default async function IngredientPage() {
       />
 
       <div
-        className="mb-8 flex items-center justify-between gap-5 rounded-3xl px-10 py-8 text-white"
+        className="mb-8 flex flex-col items-start gap-5 rounded-3xl px-6 py-6 text-white md:flex-row md:items-center md:justify-between md:px-10 md:py-8"
         style={{
           background:
             "linear-gradient(135deg, var(--forest), var(--forest-2))",
@@ -33,7 +33,7 @@ export default async function IngredientPage() {
         </div>
         <Link
           href="/party/new?type=ingredient"
-          className="flex shrink-0 items-center gap-3 rounded-2xl px-9 py-5 text-lg font-bold text-[var(--forest)] shadow-[0_6px_20px_rgba(0,0,0,0.18)] transition hover:-translate-y-0.5 hover:shadow-[0_10px_26px_rgba(0,0,0,0.24)]"
+          className="flex w-full shrink-0 items-center justify-center gap-3 rounded-2xl px-9 py-4 text-lg font-bold text-[var(--forest)] shadow-[0_6px_20px_rgba(0,0,0,0.18)] transition hover:-translate-y-0.5 hover:shadow-[0_10px_26px_rgba(0,0,0,0.24)] md:w-auto md:py-5"
           style={{ background: "#fff" }}
         >
           <span

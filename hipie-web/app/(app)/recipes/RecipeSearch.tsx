@@ -59,7 +59,7 @@ export default function RecipeSearch() {
   return (
     <div className="mb-11">
       {/* 모드 토글 */}
-      <div className="mb-4 inline-flex rounded-xl border border-[var(--line)] bg-white p-1">
+      <div className="mb-4 flex w-full rounded-xl border border-[var(--line)] bg-white p-1 sm:inline-flex sm:w-auto">
         {(
           [
             { m: "ingredient" as Mode, label: "🥕 재료로 추천" },
@@ -69,7 +69,7 @@ export default function RecipeSearch() {
           <button
             key={m}
             onClick={() => switchMode(m)}
-            className={`rounded-lg px-5 py-2.5 text-[15px] font-semibold transition ${
+            className={`flex-1 whitespace-nowrap rounded-lg px-3 py-2.5 text-sm font-semibold transition sm:flex-none sm:px-5 sm:text-[15px] ${
               mode === m
                 ? "bg-[var(--forest)] text-white"
                 : "text-[var(--muted)] hover:text-[var(--forest)]"
@@ -93,7 +93,7 @@ export default function RecipeSearch() {
         />
         <button
           type="submit"
-          className="rounded-xl px-7 text-[15px] font-bold text-white"
+          className="shrink-0 whitespace-nowrap rounded-xl px-6 py-3.5 text-[15px] font-bold text-white"
           style={{ background: "var(--forest)" }}
         >
           {mode === "ingredient" ? "추천받기" : "검색"}
@@ -114,7 +114,7 @@ export default function RecipeSearch() {
               일치하는 레시피가 없어요. 다른 키워드로 시도해보세요.
             </p>
           ) : (
-            <div className="grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-5">
+            <div className="grid grid-cols-[repeat(auto-fill,minmax(min(200px,100%),1fr))] gap-4 sm:gap-5">
               {results.map((r) => (
                 <RecipeCard
                   key={r.id}

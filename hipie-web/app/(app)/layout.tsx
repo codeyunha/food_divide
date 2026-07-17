@@ -28,9 +28,11 @@ export default async function AppLayout({
   return (
     <div className="flex h-screen flex-col md:flex-row">
       <Sidebar profile={typedProfile} />
-      <main className="flex-1 overflow-y-auto">
+      <main className="min-w-0 flex-1 overflow-y-auto">
         <MobileNav profile={typedProfile} />
-        <div className="px-4 py-6 md:px-16 md:py-12">{children}</div>
+        <div className="overflow-x-clip px-4 py-6 md:px-16 md:py-12">
+          {children}
+        </div>
       </main>
       <ChatbotLauncher />
     </div>
