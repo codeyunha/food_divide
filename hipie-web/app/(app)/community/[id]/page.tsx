@@ -5,6 +5,7 @@ import { getPost, listComments } from "@/lib/queries";
 import { timeAgo } from "@/lib/format";
 import PostActions from "./PostActions";
 import CommentSection from "./CommentSection";
+import PostMannerVoteButtons from "@/components/PostMannerVoteButtons";
 
 export const dynamic = "force-dynamic";
 
@@ -23,6 +24,18 @@ export default async function PostDetail({
   if (!post) notFound();
 
   const isAuthor = !!user && user.id === post.author_id;
+
+  // 작성자 "내 그릇" 좋아요/싫어요 — 로그인 & 본인 글 아님
+  let myPostVote: 1 | -1 | null = null;
+  if (user && !isAuthor) {
+    const { data: voteRow } = await supabase
+      .from("post_manner_votes")
+      .select("vote")
+      .eq("post_id", id)
+      .eq("voter_id", user.id)
+      .maybeSingle();
+    myPostVote = (voteRow?.vote as 1 | -1 | undefined) ?? null;
+  }
 
   return (
     <div className="mx-auto max-w-3xl">
@@ -49,8 +62,11 @@ export default async function PostDetail({
               )}
             </div>
             <div>
-              <p className="text-[15px] font-bold text-[var(--ink)]">
+              <p className="flex items-center gap-1.5 text-[15px] font-bold text-[var(--ink)]">
                 {post.author?.nickname ?? "익명"}
+                <span className="rounded-full bg-[var(--forest-light)] px-2 py-0.5 text-[12px] font-bold text-[var(--forest)]">
+                  🥣 {post.author?.manner_score ?? 50}
+                </span>
               </p>
               <p className="text-[13px] text-[var(--muted)]">
                 {timeAgo(post.created_at)}
@@ -81,6 +97,23 @@ export default async function PostDetail({
           {post.content}
         </div>
       </div>
+
+      {/* 작성자 "내 그릇" 좋아요/싫어요 평가 */}
+      {user && !isAuthor && (
+        <div className="mt-6 flex flex-col items-center gap-3 rounded-2xl border border-[var(--line)] bg-white p-6 text-center">
+          <p className="text-[14px] text-[var(--muted)]">
+            <b className="text-[var(--ink)]">
+              {post.author?.nickname ?? "익명"}
+            </b>
+            님의 🥣 내 그릇 점수는{" "}
+            <b className="text-[var(--forest)]">
+              {post.author?.manner_score ?? 50}
+            </b>
+            점이에요
+          </p>
+          <PostMannerVoteButtons postId={post.id} myVote={myPostVote} />
+        </div>
+      )}
 
       <CommentSection
         postId={post.id}

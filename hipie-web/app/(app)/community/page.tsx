@@ -29,45 +29,94 @@ export default async function CommunityPage() {
           아직 게시글이 없어요. 첫 글을 남겨보세요!
         </div>
       ) : (
-        <div className="overflow-hidden rounded-2xl border border-[var(--line)] bg-white">
-          {posts.map((p, i) => (
+        <div className="flex flex-col gap-4">
+          {posts.map((p) => (
             <Link
               key={p.id}
               href={`/community/${p.id}`}
-              className={`flex items-center gap-4 px-7 py-5 transition hover:bg-[var(--forest-light)]/40 ${
-                i > 0 ? "border-t border-[var(--line)]" : ""
-              }`}
+              className="block rounded-2xl border border-[var(--line)] bg-white p-5 transition hover:-translate-y-0.5 hover:shadow-lg sm:p-6"
             >
-              <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center overflow-hidden rounded-xl bg-[var(--forest-light)] text-xl">
-                {p.author?.avatar_url ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={p.author.avatar_url}
-                    alt=""
-                    className="h-full w-full object-cover"
-                  />
-                ) : (
-                  "🐤"
-                )}
-              </div>
-              <div className="min-w-0 flex-1">
-                <h4 className="truncate text-base font-bold text-[var(--ink)]">
-                  {p.title}
-                  {p.images?.length > 0 && (
-                    <span className="ml-1.5 text-[13px] text-[var(--muted)]">📷</span>
+              {/* 작성자 */}
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center overflow-hidden rounded-xl bg-[var(--forest-light)] text-lg">
+                  {p.author?.avatar_url ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={p.author.avatar_url}
+                      alt=""
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    "🐤"
                   )}
-                </h4>
-                <p className="mt-1 truncate text-[13px] text-[var(--muted)]">
-                  {p.author?.nickname ?? "익명"} · {timeAgo(p.created_at)}
-                </p>
+                </div>
+                <div className="min-w-0">
+                  <p className="flex items-center gap-1.5 text-[14px] font-bold text-[var(--ink)]">
+                    <span className="truncate">
+                      {p.author?.nickname ?? "익명"}
+                    </span>
+                    <span className="flex-shrink-0 rounded-full bg-[var(--forest-light)] px-2 py-0.5 text-[11.5px] font-bold text-[var(--forest)]">
+                      🥣 {p.author?.manner_score ?? 50}
+                    </span>
+                  </p>
+                  <p className="text-[12.5px] text-[var(--muted)]">
+                    {timeAgo(p.created_at)}
+                  </p>
+                </div>
               </div>
-              <div className="flex flex-shrink-0 items-center gap-1 rounded-full bg-[var(--cream)] px-3.5 py-2 text-[13px] font-bold text-[var(--forest)]">
-                💬 {p.comment_count ?? 0}
+
+              {/* 제목 + 내용 미리보기 */}
+              <h4 className="mt-3 line-clamp-1 text-[17px] font-bold text-[var(--ink)]">
+                {p.title}
+              </h4>
+              {p.content && (
+                <p className="mt-1.5 line-clamp-2 whitespace-pre-wrap text-[14px] leading-relaxed text-[var(--muted)]">
+                  {p.content}
+                </p>
+              )}
+
+              {/* 사진 최대 4장 미리보기 */}
+              <PostImages images={p.images ?? []} />
+
+              {/* 댓글 수 */}
+              <div className="mt-4 flex items-center gap-1.5 text-[13px] font-semibold text-[var(--muted)]">
+                💬 댓글 {p.comment_count ?? 0}
               </div>
             </Link>
           ))}
         </div>
       )}
     </>
+  );
+}
+
+function PostImages({ images }: { images: string[] }) {
+  const imgs = images.slice(0, 4);
+  const extra = images.length - imgs.length;
+  if (imgs.length === 0) return null;
+
+  const single = imgs.length === 1;
+
+  return (
+    <div
+      className={`mt-3.5 grid gap-1.5 ${single ? "grid-cols-1" : "grid-cols-2"}`}
+    >
+      {imgs.map((src, idx) => (
+        <div
+          key={src}
+          className={`relative overflow-hidden rounded-xl bg-[var(--forest-light)] ${
+            single ? "h-52 sm:h-64" : "h-32 sm:h-40"
+          } ${imgs.length === 3 && idx === 0 ? "col-span-2" : ""}`}
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={src} alt="" className="h-full w-full object-cover" />
+          {extra > 0 && idx === imgs.length - 1 && (
+            <div className="absolute inset-0 flex items-center justify-center bg-black/45 text-xl font-bold text-white">
+              +{extra}
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
   );
 }
