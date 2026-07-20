@@ -31,12 +31,16 @@ export default function CommentSection({
     const { data, error } = await supabase
       .from("comments")
       .insert({ post_id: postId, author_id: userId, content })
-      .select("id, post_id, author_id, content, created_at")
+      .select(
+        "id, post_id, author_id, content, created_at, author:profiles!comments_author_id_fkey(id, nickname, avatar_url, manner_score)"
+      )
       .single();
     setPosting(false);
     if (!error && data) {
       setText("");
-      setComments((prev) => [...prev, data as Comment]);
+      const raw = data as unknown as Comment & { author: Comment["author"] | Comment["author"][] };
+      const author = Array.isArray(raw.author) ? raw.author[0] ?? null : raw.author ?? null;
+      setComments((prev) => [...prev, { ...raw, author }]);
       router.refresh();
     }
   }

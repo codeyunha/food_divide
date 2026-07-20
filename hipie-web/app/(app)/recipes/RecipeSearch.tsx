@@ -14,6 +14,11 @@ type Rec = {
 
 type Mode = "ingredient" | "name";
 
+/** PostgREST .or() 필터 문자열에서 구분자로 쓰이는 문자(, ( ))를 이스케이프한다. */
+function escapeOrFilterValue(v: string) {
+  return v.replace(/\\/g, "\\\\").replace(/[,()]/g, (c) => `\\${c}`);
+}
+
 export default function RecipeSearch() {
   const supabase = createClient();
   const [mode, setMode] = useState<Mode>("ingredient");
@@ -39,7 +44,7 @@ export default function RecipeSearch() {
       setResults((data as Rec[]) ?? []);
     } else {
       // 전체 레시피 이름/재료/태그 검색
-      const like = `%${q}%`;
+      const like = `%${escapeOrFilterValue(q)}%`;
       const { data } = await supabase
         .from("recipes")
         .select("id, name, main_image, category")

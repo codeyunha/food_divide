@@ -7,12 +7,18 @@ export function dateKo(iso: string) {
   return `${d.getMonth() + 1}월 ${d.getDate()}일`;
 }
 
+const KST_OFFSET_MS = 9 * 60 * 60 * 1000;
+
+/** 서버 타임존(주로 UTC)과 무관하게 KST(UTC+9) 기준 오늘 날짜의 자정(UTC epoch)을 구한다. */
+function todayKstMidnight() {
+  const kstNow = new Date(Date.now() + KST_OFFSET_MS);
+  return Date.UTC(kstNow.getUTCFullYear(), kstNow.getUTCMonth(), kstNow.getUTCDate());
+}
+
 export function daysLeft(iso: string) {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const target = new Date(iso);
-  target.setHours(0, 0, 0, 0);
-  return Math.round((target.getTime() - today.getTime()) / 86400000);
+  const [y, m, d] = iso.slice(0, 10).split("-").map(Number);
+  const target = Date.UTC(y, m - 1, d);
+  return Math.round((target - todayKstMidnight()) / 86400000);
 }
 
 export type Urgency = { label: string; text: string; bg: string };

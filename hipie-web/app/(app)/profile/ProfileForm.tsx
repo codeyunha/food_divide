@@ -21,6 +21,7 @@ export default function ProfileForm({
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   async function uploadAvatar(file: File) {
     setUploading(true);
@@ -54,6 +55,7 @@ export default function ProfileForm({
     e.preventDefault();
     setSaving(true);
     setSaved(false);
+    setSaveError(null);
     const { error } = await supabase
       .from("profiles")
       .update({ nickname })
@@ -62,6 +64,8 @@ export default function ProfileForm({
     if (!error) {
       setSaved(true);
       router.refresh();
+    } else {
+      setSaveError("닉네임 저장에 실패했어요: " + error.message);
     }
   }
 
@@ -120,6 +124,7 @@ export default function ProfileForm({
           {saving ? "저장 중..." : "저장"}
         </button>
         {saved && <span className="ml-3 text-sm text-[var(--forest)]">저장됐어요 ✓</span>}
+        {saveError && <p className="mt-2 text-sm text-red-500">{saveError}</p>}
       </form>
     </div>
   );
