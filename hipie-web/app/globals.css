@@ -40,6 +40,43 @@ button {
   border-radius: 6px;
 }
 
+/* 배경에 떨어지는 음식 애니메이션 */
+@keyframes food-fall {
+  0% {
+    transform: translate3d(0, -12vh, 0) rotate(0deg);
+    opacity: 0;
+  }
+  8% {
+    opacity: 0.9;
+  }
+  92% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translate3d(var(--drift, 0px), 112vh, 0) rotate(var(--spin, 360deg));
+    opacity: 0;
+  }
+}
+
+.falling-food {
+  position: absolute;
+  top: 0;
+  will-change: transform, opacity;
+  animation-name: food-fall;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  user-select: none;
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.12));
+}
+
+/* 접근성: 모션 최소화 설정 시 애니메이션 정지 */
+@media (prefers-reduced-motion: reduce) {
+  .falling-food {
+    animation: none;
+    opacity: 0.5;
+  }
+}
+
 /* thin scrollbar */
 ::-webkit-scrollbar {
   width: 8px;

@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import FallingFood from "@/components/FallingFood";
 
 export default function SplashPage() {
   return (
@@ -7,6 +8,8 @@ export default function SplashPage() {
       className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden text-white"
       style={{ background: "var(--forest)" }}
     >
+      {/* 배경: 천천히 떨어지는 음식 */}
+      <FallingFood />
       <div
         className="absolute rounded-full"
         style={{
