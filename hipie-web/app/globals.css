@@ -43,14 +43,14 @@ button {
 /* 배경에 떨어지는 음식 애니메이션 */
 @keyframes food-fall {
   0% {
-    transform: translate3d(0, -12vh, 0) rotate(0deg);
+    transform: translate3d(0, -20px, 0) rotate(0deg);
     opacity: 0;
   }
   8% {
-    opacity: 0.9;
+    opacity: 0.8;
   }
   92% {
-    opacity: 0.9;
+    opacity: 0.8;
   }
   100% {
     transform: translate3d(var(--drift, 0px), 112vh, 0) rotate(var(--spin, 360deg));
