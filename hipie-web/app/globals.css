@@ -61,10 +61,13 @@ button {
 .falling-food {
   position: absolute;
   top: 0;
+  opacity: 0;
   will-change: transform, opacity;
   animation-name: food-fall;
   animation-timing-function: linear;
   animation-iteration-count: infinite;
+  /* 지연 시간 동안 첫 키프레임(opacity 0)을 유지해 고정 상태가 보이지 않게 */
+  animation-fill-mode: backwards;
   user-select: none;
   filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.12));
 }
