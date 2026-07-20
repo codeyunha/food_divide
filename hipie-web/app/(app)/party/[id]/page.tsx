@@ -205,6 +205,8 @@ export default async function PartyDetail({
           isHost={isHost}
           partyType={party.type}
           isBanned={isBanned}
+          memberCount={memberIds.length}
+          capacity={party.capacity}
         />
       </div>
 

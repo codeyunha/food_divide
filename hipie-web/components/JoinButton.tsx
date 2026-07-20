@@ -10,19 +10,28 @@ export default function JoinButton({
   isHost,
   partyType,
   isBanned = false,
+  memberCount,
+  capacity,
 }: {
   partyId: string;
   isMember: boolean;
   isHost: boolean;
   partyType: "finished" | "ingredient";
   isBanned?: boolean;
+  memberCount: number;
+  capacity: number | null;
 }) {
   const router = useRouter();
   const supabase = createClient();
   const [loading, setLoading] = useState(false);
   const listHref = partyType === "finished" ? "/dish" : "/ingredient";
+  const isFull = !!capacity && capacity > 0 && memberCount >= capacity;
 
   async function join() {
+    if (isFull) {
+      alert("정원이 마감된 파티예요.");
+      return;
+    }
     setLoading(true);
     const {
       data: { user },
@@ -124,15 +133,15 @@ export default function JoinButton({
     );
   }
 
-  // 비참여: 참여하기
+  // 비참여: 참여하기 (정원 마감 시 비활성화)
   return (
     <button
       onClick={join}
-      disabled={loading}
+      disabled={loading || isFull}
       className="w-full rounded-xl py-4 text-[15px] font-bold text-white transition disabled:opacity-60"
       style={{ background: "var(--forest)" }}
     >
-      {loading ? "참여 중..." : "함께 참여하기"}
+      {isFull ? "정원 마감" : loading ? "참여 중..." : "함께 참여하기"}
     </button>
   );
 }
